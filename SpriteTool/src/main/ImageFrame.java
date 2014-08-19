@@ -1,31 +1,34 @@
 package main;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public class ImageFrame extends JScrollPane
 {
 	private JLabel imgLabel;
+	private Canvas canvas;
 	
 	public ImageFrame(){
-//		JScrollPane scrollPane = new JScrollPane();
-//		add(scrollPane);
-//	    ImageIcon img = new ImageIcon("D:\\Avery\\Desktop\\SAVE ITa.jpg");
-//	    imgLabel = new JLabel(img);
-//	    scrollPane.setViewportView(imgLabel);
-//	    setSize(300, 250);
+		canvas = new Canvas();
+		setViewportView(canvas);
 	    setVisible(true);
 	}
 
 	public void setImagePath(String path){
+//		if (imgLabel == null){
+//			imgLabel = new JLabel(new ImageIcon(path));
+//		} else {
+//			imgLabel.setIcon(new ImageIcon(path));
+//		}
+//		setViewportView(imgLabel);
 		System.out.println("setting in imgframe: "+path);
-		if (imgLabel == null){
-			imgLabel = new JLabel(new ImageIcon(path));
-		} else {
-			imgLabel.setIcon(new ImageIcon(path));
-		}
-		setViewportView(imgLabel);
+		canvas.setImagePath(path);
 	}
 }
