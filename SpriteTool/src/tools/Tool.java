@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import main.MainWindow;
+
 public abstract class Tool
 {
 	private String toolName;
@@ -31,7 +33,18 @@ public abstract class Tool
 	
 	
 	
-	public abstract void selected();
-	public abstract void deselected();
+	public void selected(){
+		MainWindow.MAIN_WINDOW.statusPanel.setLeftLabel(toolName);
+		System.out.println("HI");
+	}
+	
+	public void deselected(){
+		
+	}
 	public abstract void onClick(MouseEvent event);
+	public void onClick(int x, int y){}
+	
+	public String getName(){
+		return toolName;
+	}
 }

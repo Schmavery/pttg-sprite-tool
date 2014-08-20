@@ -9,21 +9,7 @@ public class Magnifier extends Tool
 	public Magnifier(){
 		super("Magnifier", "res/mag.png");
 	}
-
-	@Override
-	public void selected()
-	{
-		System.out.println("Tool switched to magnifier");
-		MainWindow.MAIN_WINDOW.statusPanel.setLeftLabel("Magnifier");
-	}
-
-	@Override
-	public void deselected()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void onClick(MouseEvent event)
 	{
