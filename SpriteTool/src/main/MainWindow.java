@@ -24,8 +24,8 @@ import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import tools.Tool;
-import tools.Tools;
+import main.tools.Tool;
+import main.tools.Tools;
 
 
 public class MainWindow extends JFrame

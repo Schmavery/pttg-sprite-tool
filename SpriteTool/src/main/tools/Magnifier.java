@@ -1,4 +1,4 @@
-package tools;
+package main.tools;
 
 import java.awt.event.MouseEvent;
 
