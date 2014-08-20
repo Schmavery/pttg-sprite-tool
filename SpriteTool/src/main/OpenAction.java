@@ -8,6 +8,7 @@ import javax.swing.JFileChooser;
 
 public class OpenAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
 	JFileChooser fc = new JFileChooser();
 	public OpenAction(){
 		super("Open");

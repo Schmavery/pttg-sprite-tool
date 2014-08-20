@@ -15,13 +15,11 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import main.tools.Tool;
@@ -39,6 +37,7 @@ public class MainWindow extends JFrame
 	
 	public ImagePanel centerPanel;
 	public StatusPanel statusPanel;
+	public OptionsPanel optionsPanel;
 	public Tool currentTool = Tools.getMagnifier();
 	
 	public static void main(String[] args)
@@ -80,9 +79,9 @@ public class MainWindow extends JFrame
 		JPanel toolbarShell = new JPanel();
 		setupToolbar(toolbarShell);
 		
-		JPanel options = new JPanel();
-		options.setBorder(new TitledBorder("Options"));
-		toolbarShell.add(options);
+		optionsPanel = new OptionsPanel();
+		optionsPanel.setBorder(new TitledBorder("Options"));
+		toolbarShell.add(optionsPanel);
 		
 		add(statusPanel, BorderLayout.SOUTH);
 		add(toolbarShell, BorderLayout.EAST);
@@ -177,8 +176,26 @@ public class MainWindow extends JFrame
 		anchorButton.setMargin(new Insets(0,0,0,0));
 		toolbar.add(anchorButton);
 		
+		JButton boxButton = new JButton();
+		boxButton.setAction(new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				currentTool.deselected();
+				currentTool = Tools.getBoxer();
+				currentTool.selected();
+			}
+		});
+		boxButton.setIcon(new ImageIcon(Tools.getBoxer().getImage()));
+		boxButton.setBackground(Color.LIGHT_GRAY);
+		boxButton.setFocusPainted(false);
+		boxButton.setPreferredSize(new Dimension(30, 30));
+		boxButton.setMargin(new Insets(0,0,0,0));
+		toolbar.add(boxButton);
+		
 
-		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));

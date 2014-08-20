@@ -10,9 +10,9 @@ import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -119,8 +119,9 @@ public class PrefPanel extends JPanel implements ActionListener
 		defaultMag.getDocument().addDocumentListener(docListener);
 		firstPanel.add(defaultMag);
 		firstPanel.add(new JLabel("Default Magnification:"));
-		
-		JSpinner spin = new JSpinner();
+//		defaultMag.addP
+//		JSpinner spin = new JSpinner();
+//		spin.addPrd
 		firstPanel.add(new JTextField("Default..."));
 		genPanel.add(firstPanel);
 	}

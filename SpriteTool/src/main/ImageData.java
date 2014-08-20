@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 public class ImageData
 {
+	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
 	private BufferedImage img;
 	private float scale;
@@ -23,8 +24,11 @@ public class ImageData
 		return scale;
 	}
 	
-	public void setScale(float scale){
+	public float setScale(float scale){
+		scale = Math.max(1, Math.min(MAX_MAG,scale));
 		this.scale = scale;
+		System.out.println("Set scale to "+scale);
+		return scale;
 	}
 	
 	public void resetScale(){

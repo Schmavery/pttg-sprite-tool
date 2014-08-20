@@ -21,7 +21,7 @@ import main.tools.Tool;
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 {
 	private static final long serialVersionUID = 1L;
-	private static final int MAX_MAG = 100;
+	
 	private ImageData imgData;
 	
 	public Canvas(){
@@ -57,8 +57,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	public void setScale(float scale){
-		scale = Math.max(1, Math.min(MAX_MAG,scale));
-		System.out.println("Set scale to "+scale);
 		imgData.setScale(scale);
 		refresh();
 	}
@@ -119,17 +117,12 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseClicked(MouseEvent event)
 	{
-		int x = (int) (event.getX()/imgData.getScale());
-		int y = (int) (event.getY()/imgData.getScale());
-		System.out.println("Clicked (" + x + "," + y + ")");
-		if (imgData.hasImage()){
-//			MainWindow.MAIN_WINDOW.centerPanel.setBackground(new Color(img.getRGB(x, y)));
 			Tool tool = MainWindow.MAIN_WINDOW.getCurrentTool();
-			if (tool != null && imgData.inBounds(x, y)){
+			if (tool != null){
 				tool.onClick(event);
 				refresh();
 			}
-		}
+//		}
 	}
 
 	@Override

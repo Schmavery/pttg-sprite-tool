@@ -9,6 +9,7 @@ import javax.swing.border.BevelBorder;
 
 public class StatusPanel extends JPanel
 {
+	private static final long serialVersionUID = 1L;
 	JLabel leftLabel;
 	
 	public StatusPanel(){

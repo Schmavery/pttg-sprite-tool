@@ -8,6 +8,7 @@ import javax.swing.WindowConstants;
 
 public class PrefAction extends AbstractAction
 {
+	private static final long serialVersionUID = 1L;
 
 	public PrefAction(){
 		super("Preferences");

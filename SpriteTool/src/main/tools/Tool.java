@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 import main.MainWindow;
 
@@ -14,6 +15,7 @@ public abstract class Tool
 {
 	private String toolName;
 	private BufferedImage img;
+	private JPanel optionsInnerPanel;
 	
 	public Tool(String name, String path){
 		toolName = name;
@@ -31,20 +33,48 @@ public abstract class Tool
 		return img;
 	}
 	
+	public void setOptionInnerPanel(JPanel optionsPanel){
+		this.optionsInnerPanel = optionsPanel;
+	}
 	
+	public JPanel getOptionsInnerPanel(){
+		resetOptionsInnerPanel();
+		return optionsInnerPanel;
+	}
+	
+	public void resetOptionsInnerPanel(){
+	}
 	
 	public void selected(){
 		MainWindow.MAIN_WINDOW.statusPanel.setLeftLabel(toolName);
-		System.out.println("HI");
+		resetOptionsInnerPanel();
+		MainWindow.MAIN_WINDOW.optionsPanel.setInner(optionsInnerPanel);
 	}
 	
 	public void deselected(){
 		
 	}
-	public abstract void onClick(MouseEvent event);
-	public void onClick(int x, int y){}
+	
+	public void onClick(MouseEvent event){
+		float scale = MainWindow.MAIN_WINDOW.getCanvas().getImageData().getScale();
+		int x = (int) (event.getX()/scale);
+		int y = (int) (event.getY()/scale);
+		if (MainWindow.MAIN_WINDOW.getCanvas().getImageData().inBounds(x, y)){
+			onClick(event, x, y);
+		}
+	}
+	
+	public abstract void onClick(MouseEvent event, int x, int y);
 	
 	public String getName(){
 		return toolName;
+	}
+	
+	public static String formatFloat(float f){
+//		return String.valueOf(f);
+		if(f == (int) f)
+	        return String.format("%d",(int)f);
+	    else
+	        return String.format("%s",f);
 	}
 }
