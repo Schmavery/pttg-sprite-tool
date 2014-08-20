@@ -1,2 +1,6 @@
 /bin
 /spritetool.properties
+
+# Eclipse files
+.classpath
+.project
