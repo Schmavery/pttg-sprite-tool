@@ -10,24 +10,24 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-public class ImageFrame extends JScrollPane
+public class ImagePanel extends JScrollPane
 {
+	private static final int SCROLL_SPEED = 10;
 	private JLabel imgLabel;
 	private Canvas canvas;
 	
-	public ImageFrame(){
+	public ImagePanel(){
 		canvas = new Canvas();
 		setViewportView(canvas);
 	    setVisible(true);
+	    getVerticalScrollBar().setUnitIncrement(SCROLL_SPEED);
+	}
+	
+	public Canvas getCanvas(){
+		return canvas;
 	}
 
 	public void setImagePath(String path){
-//		if (imgLabel == null){
-//			imgLabel = new JLabel(new ImageIcon(path));
-//		} else {
-//			imgLabel.setIcon(new ImageIcon(path));
-//		}
-//		setViewportView(imgLabel);
 		System.out.println("setting in imgframe: "+path);
 		canvas.setImagePath(path);
 	}
