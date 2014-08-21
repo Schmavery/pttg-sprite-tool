@@ -11,7 +11,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +18,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
@@ -28,16 +28,18 @@ import main.tools.Tools;
 
 public class MainWindow extends JFrame
 {
-
-//	public static enum Tools {MAG, BRUSH};
 	private static final long serialVersionUID = 1L;
 	public static final int WINDOW_HEIGHT = 700;
 	public static final int WINDOW_WIDTH = 1000;
 	public static MainWindow MAIN_WINDOW;
 	
-	public ImagePanel centerPanel;
+	public ImagePanel imagePanel;
+	public SheetPanel sheetPanel;
+	public JTabbedPane editorTabPane;
 	public StatusPanel statusPanel;
 	public OptionsPanel optionsPanel;
+	
+	private SheetData sheetData;
 	public Tool currentTool = Tools.getMagnifier();
 	
 	public static void main(String[] args)
@@ -49,7 +51,6 @@ public class MainWindow extends JFrame
 			public void run()
 			{
 				MainWindow w = new MainWindow();
-				MainWindow.MAIN_WINDOW = w;
 				w.setVisible(true);
 			}
 		});
@@ -57,6 +58,10 @@ public class MainWindow extends JFrame
 	
 	
 	public MainWindow(){
+		if (MAIN_WINDOW == null){
+			MainWindow.MAIN_WINDOW = this;
+		}
+		
 		setTitle("PTTG Sprite Tool");
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(true);
@@ -65,13 +70,15 @@ public class MainWindow extends JFrame
 		
 		setLayout(new BorderLayout(5, 5));
 		
-		
-		
 		statusPanel = new StatusPanel();
 		
-		
-		centerPanel = new ImagePanel();
-		centerPanel.setBorder(new TitledBorder("Image"));
+		editorTabPane = new JTabbedPane();
+		sheetPanel = new SheetPanel();
+		imagePanel = new ImagePanel();
+		editorTabPane.getSelectedComponent();
+		editorTabPane.addTab("Sheet View", sheetPanel);
+		editorTabPane.addTab("Image View", imagePanel);
+//		centerPanel.setBorder(new TitledBorder("Image"));
 		
 		JMenuBar menuBar = new JMenuBar();
 		setupMenu(menuBar);
@@ -79,18 +86,16 @@ public class MainWindow extends JFrame
 		JPanel toolbarShell = new JPanel();
 		setupToolbar(toolbarShell);
 		
-		optionsPanel = new OptionsPanel();
-		optionsPanel.setBorder(new TitledBorder("Options"));
-		toolbarShell.add(optionsPanel);
-		
 		add(statusPanel, BorderLayout.SOUTH);
 		add(toolbarShell, BorderLayout.EAST);
 		add(menuBar, BorderLayout.NORTH);
-		add(centerPanel, BorderLayout.CENTER);
+//		add(imagePanel, BorderLayout.CENTER);
+		add(editorTabPane, BorderLayout.CENTER);
+
 		
 		
 		setupListeners();
-//		currentTool.selected();
+		currentTool.selected();
 	}
 	
 	private void setupMenu(JMenuBar menuBar){
@@ -127,75 +132,35 @@ public class MainWindow extends JFrame
 		prefMI.setMnemonic(KeyEvent.VK_P);
 		menu.add(prefMI);
 		
+		JMenuItem closeMI = new JMenuItem();
+		closeMI.setAction(new AbstractAction("Close") {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				MainWindow.this.exit();
+			}
+			
+		});
+		menu.add(closeMI);
+		
 		openMI.setAccelerator(KeyStroke.getKeyStroke("control O"));
 		saveMI.setAccelerator(KeyStroke.getKeyStroke("control S"));
 	}
 	
 	private void setupToolbar(JPanel toolbarShell){
-		toolbarShell.setLayout(new BoxLayout(toolbarShell, BoxLayout.PAGE_AXIS));
-//		toolbarShell.setPreferredSize(new Dimension(120, 100));
+		toolbarShell.setLayout(new BorderLayout());
+		
 		JPanel toolbar = new JPanel(new GridLayout(5, 3, 3, 3));
 		toolbar.setBorder(new TitledBorder("Toolbar"));
 		
-		JButton magButton = new JButton();
-		magButton.setAction(new AbstractAction(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void actionPerformed(ActionEvent event)
-			{
-				currentTool.deselected();
-				currentTool = Tools.getMagnifier();
-				currentTool.selected();
-			}
-		});
-//		magButton.setBorderPainted(false);
-//		magButton.setContentAreaFilled(false);
-		magButton.setIcon(new ImageIcon(Tools.getMagnifier().getImage()));
-		magButton.setBackground(Color.LIGHT_GRAY);
-		magButton.setFocusPainted(false);
-		magButton.setPreferredSize(new Dimension(30, 30));
-		magButton.setMargin(new Insets(0,0,0,0));
-		toolbar.add(magButton);
-		
-		
-		JButton anchorButton = new JButton();
-		anchorButton.setAction(new AbstractAction(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void actionPerformed(ActionEvent event)
-			{
-				currentTool.deselected();
-				currentTool = Tools.getAnchor();
-				currentTool.selected();
-			}
-		});
-		anchorButton.setIcon(new ImageIcon(Tools.getAnchor().getImage()));
-		anchorButton.setBackground(Color.LIGHT_GRAY);
-		anchorButton.setFocusPainted(false);
-		anchorButton.setPreferredSize(new Dimension(30, 30));
-		anchorButton.setMargin(new Insets(0,0,0,0));
-		toolbar.add(anchorButton);
-		
-		JButton boxButton = new JButton();
-		boxButton.setAction(new AbstractAction(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void actionPerformed(ActionEvent event)
-			{
-				currentTool.deselected();
-				currentTool = Tools.getBoxer();
-				currentTool.selected();
-			}
-		});
-		boxButton.setIcon(new ImageIcon(Tools.getBoxer().getImage()));
-		boxButton.setBackground(Color.LIGHT_GRAY);
-		boxButton.setFocusPainted(false);
-		boxButton.setPreferredSize(new Dimension(30, 30));
-		boxButton.setMargin(new Insets(0,0,0,0));
-		toolbar.add(boxButton);
-		
+		createToolbarButton(Tools.getMagnifier(), toolbar);
+		createToolbarButton(Tools.getAnchor(), toolbar);
+		createToolbarButton(Tools.getBoxTool(), toolbar);
+		createToolbarButton(Tools.getSnipTool(), toolbar);
 
-//		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
@@ -207,8 +172,35 @@ public class MainWindow extends JFrame
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbarShell.add(toolbar);		
+		
+		optionsPanel = new OptionsPanel();
+		optionsPanel.setBorder(new TitledBorder("Options"));
+		toolbarShell.add(optionsPanel, BorderLayout.CENTER);
+		toolbarShell.add(toolbar, BorderLayout.NORTH);		
+	}
+	
+	private void createToolbarButton(final Tool tool, JPanel toolbar){
+		JButton button = new JButton();
+		button.setAction(new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				currentTool.deselected();
+				currentTool = tool;
+				currentTool.selected();
+			}
+		});
+		button.setIcon(new ImageIcon(tool.getImage()));
+		button.setBackground(Color.LIGHT_GRAY);
+//		if (tool.equals(currentTool)){
+//			currentTool.setButton(button);
+//		}
+		tool.setButton(button);
+		button.setFocusPainted(false);
+		button.setPreferredSize(new Dimension(40, 40));
+		button.setMargin(new Insets(0,0,0,0));
+		toolbar.add(button);
 	}
 	
 	private void setupListeners(){
@@ -216,24 +208,32 @@ public class MainWindow extends JFrame
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent event) {
-	            Preferences.PREFS.savePrefChanges();
-	            System.exit(0);
+	            MainWindow.this.exit();
 	        }
 	    });
 		
 	}
 	
 	public Canvas getCanvas(){
-		return centerPanel.getCanvas();
+		return ((EditorPanel) editorTabPane.getSelectedComponent()).getCanvas();
+//		return imagePanel.getCanvas();
+	}
+	
+	public SheetData getSheetData(){
+		return sheetData;
 	}
 
 	public void setImagePath(String path){
 		System.out.println("Setting image");
-		centerPanel.setImagePath(path);
+		sheetPanel.setImagePath(path);
 	}	
 	
 	public Tool getCurrentTool(){
 		return currentTool;
 	}
 
+	public void exit(){
+		Preferences.PREFS.savePrefChanges();
+        System.exit(0);
+	}
 }

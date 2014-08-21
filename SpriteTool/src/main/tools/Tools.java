@@ -5,7 +5,8 @@ public class Tools
 	private Tools(){}
 	private static Magnifier mag = new Magnifier();
 	private static Anchor anchor = new Anchor();
-	private static Boxer boxer = new Boxer();
+	private static BoxTool boxTool = new BoxTool();
+	private static SnipTool snipTool = new SnipTool();
 	
 	public static Magnifier getMagnifier(){
 		return mag;
@@ -15,8 +16,11 @@ public class Tools
 		return anchor;
 	}
 	
-	public static Boxer getBoxer(){
-		return boxer;
+	public static BoxTool getBoxTool(){
+		return boxTool;
 	}
 
+	public static SnipTool getSnipTool(){
+		return snipTool;
+	}
 }

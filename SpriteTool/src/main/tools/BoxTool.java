@@ -1,22 +1,26 @@
 package main.tools;
 
+import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import main.ImageData;
 import main.MainWindow;
 
-public class Boxer extends Tool
+public class BoxTool extends Tool
 {
 
-	public Boxer()
+	public BoxTool()
 	{
 		super("Bounding Box Tool", "res/lasso.png");
 		
 		JPanel oPanel = new JPanel();
-		oPanel.add(new JLabel("Boxer"));
+		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
+		oPanel.add(new JLabel("Box Tool"));
 		
 		setOptionInnerPanel(oPanel);
 	}

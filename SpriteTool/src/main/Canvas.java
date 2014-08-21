@@ -24,9 +24,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	
 	private ImageData imgData;
 	
+	int mouseX = 0;
+	int mouseY = 0;
+	
 	public Canvas(){
 //		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		addMouseListener(this);
+		addMouseMotionListener(this);
 		imgData = new ImageData();
 		resetScale();
 	}
@@ -102,6 +106,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 				g.drawRect(getScaledCoord(imgData.getAnchor().x), getScaledCoord(imgData.getAnchor().y), 
 						(int) imgData.getScale(), (int) imgData.getScale());
 			}
+			
+			MainWindow.MAIN_WINDOW.currentTool.drawTool(g, mouseX, mouseY);
 		}
 	}
 	
@@ -128,36 +134,34 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseEntered(MouseEvent event)
 	{
-//		System.out.println("Entered");
 	}
 
 	@Override
 	public void mouseExited(MouseEvent event)
 	{
-//		System.out.println("Exited");
 	}
 
 	@Override
 	public void mousePressed(MouseEvent event)
 	{
-		System.out.println("Pressed");
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent event)
 	{
-		System.out.println("Released");
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent arg0)
+	public void mouseDragged(MouseEvent event)
 	{
-		
+		repaint();
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent arg0)
+	public void mouseMoved(MouseEvent event)
 	{
-		
+		mouseX = (int) (event.getX()/imgData.getScale());
+		mouseY = (int) (event.getY()/imgData.getScale());
+		repaint();
 	}
 }
