@@ -8,11 +8,13 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
+import sun.applet.Main;
 import main.Canvas;
 import main.MainWindow;
 
@@ -67,6 +69,7 @@ public class SnipTool extends Tool
 				break;
 			case SECOND:
 				if (rect.contains(x, y)){
+					MainWindow.MAIN_WINDOW.getImagePanel().addSnippedImage(rect);
 					// Click was inside rect, confirmed
 					// TODO: Add rect to list of Boxes.
 				} else {
@@ -76,6 +79,16 @@ public class SnipTool extends Tool
 				break;
 			default:
 				break;
+			}
+		}
+	}
+
+	public void doAutoSnip(){
+		int imgSize = 32;
+		BufferedImage img = MainWindow.MAIN_WINDOW.getSheetData().getImage();
+		for (int i = 0; i < img.getWidth(); i += imgSize){
+			for (int j = 0; i < img.getHeight(); j += imgSize){
+				
 			}
 		}
 	}
@@ -103,9 +116,4 @@ public class SnipTool extends Tool
 			g.setColor(Color.WHITE);
 		}
 	}
-	
-	public void doAutoSnip(){
-		
-	}
-
 }

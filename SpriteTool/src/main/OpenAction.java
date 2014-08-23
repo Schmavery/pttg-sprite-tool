@@ -21,7 +21,7 @@ public class OpenAction extends AbstractAction
 		File file = fc.getSelectedFile();
 		if (file != null){
 			System.out.println(file.getAbsolutePath());
-			MainWindow.MAIN_WINDOW.setImagePath(file.getAbsolutePath());
+			MainWindow.MAIN_WINDOW.setSheetPath(file.getAbsolutePath());
 		}
 	}
 

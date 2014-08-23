@@ -1,24 +1,40 @@
 package main;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+
+import javax.swing.JButton;
 
 public class ImageData
 {
 	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
+	private Rectangle rect;
+	private SheetData owner;
 	private BufferedImage img;
 	private float scale;
 	private Point anchorPt;
+	
+	private JButton button;
+
+	public ImageData(){
+		this(null, null);
+	}
 
 	public ImageData(BufferedImage img){
-		this();
-		this.img = img;
+		this(img, null);
 	}
 	
-	public ImageData(){
+	public ImageData(BufferedImage img, SheetData owner){
+		this.img = img;
+		this.owner = owner;
+		if (img != null){
+			System.out.println("Img height: "+this.img.getHeight());
+		}
 		resetScale();
 	}
+	
 	
 	public float getScale(){
 		return scale;
@@ -74,4 +90,15 @@ public class ImageData
 		return (hasImage() && x < img.getWidth() && y < img.getHeight());
 	}
 	
+	public int getWidth(){
+		return img.getWidth();
+	}
+	
+	public int getHeight(){
+		return img.getHeight();
+	}
+	
+	public void setButton(JButton button){
+		this.button = button;
+	}
 }

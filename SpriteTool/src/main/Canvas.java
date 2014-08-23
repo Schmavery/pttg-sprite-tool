@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -21,17 +22,19 @@ import main.tools.Tool;
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 {
 	private static final long serialVersionUID = 1L;
+	public static enum CanvasType {SHEET, IMAGE};
 	
 	private ImageData imgData;
+	private CanvasType type;
 	
 	int mouseX = 0;
 	int mouseY = 0;
 	
-	public Canvas(){
-//		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+	public Canvas(CanvasType ct){
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		imgData = new ImageData();
+		type = ct;
 		resetScale();
 	}
 
@@ -76,11 +79,11 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	public int getScaledWidth(){
-		return getScaledCoord(imgData.getImage().getWidth());
+		return getScaledCoord(imgData.getWidth());
 	}
 	
 	public int getScaledHeight(){
-		return getScaledCoord(imgData.getImage().getHeight());
+		return getScaledCoord(imgData.getHeight());
 	}
 	
 	public int getScaledCoord(int coord){
@@ -91,11 +94,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		
 		if (imgData.hasImage()){
 			g.clearRect(0, 0, getScaledWidth(), getScaledHeight());
-			g.drawImage(imgData.getImage().getScaledInstance(getScaledWidth(), 
-					getScaledHeight(), Image.SCALE_AREA_AVERAGING), 0, 0, null);
-
+//			g.drawImage(imgData.getImage().getScaledInstance(getScaledWidth(), 
+//					getScaledHeight(), Image.SCALE_AREA_AVERAGING), 0, 0, null);
+			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
 			if (imgData.hasAnchor()){
 				g.setXORMode(Color.WHITE);
 				g.fillRect(getScaledCoord(imgData.getAnchor().x), getScaledCoord(imgData.getAnchor().y), 
@@ -128,7 +133,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 				tool.onClick(event);
 				refresh();
 			}
-//		}
 	}
 
 	@Override

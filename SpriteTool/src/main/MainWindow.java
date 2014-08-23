@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import main.tools.Tool;
 import main.tools.Tools;
@@ -34,12 +36,9 @@ public class MainWindow extends JFrame
 	public static MainWindow MAIN_WINDOW;
 	
 	public ImagePanel imagePanel;
-	public SheetPanel sheetPanel;
-	public JTabbedPane editorTabPane;
 	public StatusPanel statusPanel;
 	public OptionsPanel optionsPanel;
 	
-	private SheetData sheetData;
 	public Tool currentTool = Tools.getMagnifier();
 	
 	public static void main(String[] args)
@@ -72,13 +71,8 @@ public class MainWindow extends JFrame
 		
 		statusPanel = new StatusPanel();
 		
-		editorTabPane = new JTabbedPane();
-		sheetPanel = new SheetPanel();
 		imagePanel = new ImagePanel();
-		editorTabPane.getSelectedComponent();
-		editorTabPane.addTab("Sheet View", sheetPanel);
-		editorTabPane.addTab("Image View", imagePanel);
-//		centerPanel.setBorder(new TitledBorder("Image"));
+		
 		
 		JMenuBar menuBar = new JMenuBar();
 		setupMenu(menuBar);
@@ -89,8 +83,7 @@ public class MainWindow extends JFrame
 		add(statusPanel, BorderLayout.SOUTH);
 		add(toolbarShell, BorderLayout.EAST);
 		add(menuBar, BorderLayout.NORTH);
-//		add(imagePanel, BorderLayout.CENTER);
-		add(editorTabPane, BorderLayout.CENTER);
+		add(imagePanel, BorderLayout.CENTER);
 
 		
 		
@@ -193,9 +186,6 @@ public class MainWindow extends JFrame
 		});
 		button.setIcon(new ImageIcon(tool.getImage()));
 		button.setBackground(Color.LIGHT_GRAY);
-//		if (tool.equals(currentTool)){
-//			currentTool.setButton(button);
-//		}
 		tool.setButton(button);
 		button.setFocusPainted(false);
 		button.setPreferredSize(new Dimension(40, 40));
@@ -215,17 +205,20 @@ public class MainWindow extends JFrame
 	}
 	
 	public Canvas getCanvas(){
-		return ((EditorPanel) editorTabPane.getSelectedComponent()).getCanvas();
-//		return imagePanel.getCanvas();
+		return imagePanel.getCanvas();
 	}
 	
 	public SheetData getSheetData(){
-		return sheetData;
+		return imagePanel.getSheetData();
+	}
+	
+	public ImagePanel getImagePanel(){
+		return imagePanel;
 	}
 
-	public void setImagePath(String path){
+	public void setSheetPath(String path){
 		System.out.println("Setting image");
-		sheetPanel.setImagePath(path);
+		imagePanel.setSheetPath(path);
 	}	
 	
 	public Tool getCurrentTool(){
