@@ -21,7 +21,7 @@ public class PrefAction extends AbstractAction
 		PrefPanel pref = new PrefPanel(dialog);
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.add(pref);
-		dialog.setSize(400, 150);
+		dialog.setSize(400, 400);
 		dialog.setLocationRelativeTo(MainWindow.MAIN_WINDOW);
 		dialog.setVisible(true);
 	}

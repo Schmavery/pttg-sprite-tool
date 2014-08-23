@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,11 +22,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import main.tools.Tool;
 import main.tools.Tools;
@@ -62,6 +63,14 @@ public class MainWindow extends JFrame
 		}
 		
 		setTitle("PTTG Sprite Tool");
+		
+		try{
+			Image img = ImageIO.read(new File("res/board.png"));
+			setIconImage(img);
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+		
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(true);
 		setLocationRelativeTo(null);

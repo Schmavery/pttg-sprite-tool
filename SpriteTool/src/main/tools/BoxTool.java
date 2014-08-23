@@ -14,11 +14,11 @@ public class BoxTool extends Tool
 
 	public BoxTool()
 	{
-		super("Bounding Box Tool", "res/lasso.png");
+		super("Collision Box Tool", "res/lasso.png");
 		
 		JPanel oPanel = new JPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
-		oPanel.add(new JLabel("Box Tool"));
+		oPanel.add(new JLabel(getName()));
 		
 		setOptionInnerPanel(oPanel);
 	}

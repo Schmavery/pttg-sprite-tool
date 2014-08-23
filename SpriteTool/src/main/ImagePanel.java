@@ -30,6 +30,7 @@ public class ImagePanel extends JPanel
 	private JPanel lowerRight;
 	private JButton sheetButton;
 	
+	// Owner of sheetdata
 	private SheetData sheetData;
 	
 	public ImagePanel(){
@@ -52,7 +53,6 @@ public class ImagePanel extends JPanel
 		sheetButton = new JButton();
 		sheetButton.setFocusPainted(false);
 		sheetButton.setBackground(Color.WHITE);
-		sheetButton.setText("Full Canvas");
 		sheetButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 		sheetButton.setHorizontalTextPosition(SwingConstants.CENTER);
 		sheetButton.setBorder(new LineBorder(Color.BLACK));
@@ -94,6 +94,7 @@ public class ImagePanel extends JPanel
 		sheetData.setSheetPath(path, sheetButton);
 		canvas.setImagePath(path);
 		sheetButton.setIcon(new ImageIcon(getMaxScaledInstance(sheetData.getImage(), THUMB_WIDTH)));
+		sheetButton.setText("View Canvas");
 		canvas.refresh();
 		sheetButton.revalidate();
 		sheetButton.repaint();

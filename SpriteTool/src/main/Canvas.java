@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -16,6 +17,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import main.ImageData.ImageType;
 import main.tools.Tool;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
@@ -102,6 +104,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 //					getScaledHeight(), Image.SCALE_AREA_AVERAGING), 0, 0, null);
 //			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
 			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
+			
+			
 			if (imgData.hasAnchor()){
 				g.setXORMode(Color.WHITE);
 				g.fillRect(getScaledCoord(imgData.getAnchor().x), getScaledCoord(imgData.getAnchor().y), 
@@ -111,6 +115,18 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 				g.setColor(Color.PINK);
 				g.drawRect(getScaledCoord(imgData.getAnchor().x), getScaledCoord(imgData.getAnchor().y), 
 						(int) imgData.getScale(), (int) imgData.getScale());
+			}
+			
+			if (imgData.getType().equals(ImageType.SHEET)){
+				Rectangle r;
+				g.setColor(Color.DARK_GRAY);
+				for (ImageData iData: sheetData.getAllImageData()){
+					if (!iData.equals(imgData)){
+						r = iData.getRect();
+						g.drawRect(getScaledCoord(r.x), getScaledCoord(r.y), 
+								getScaledCoord(r.width), getScaledCoord(r.height));
+					}
+				}
 			}
 			
 			MainWindow.MAIN_WINDOW.currentTool.drawTool(g, mouseX, mouseY);

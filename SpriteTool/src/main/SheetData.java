@@ -8,6 +8,9 @@ import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import main.ImageData.ImageType;
 
 public class SheetData
 {
@@ -40,6 +43,7 @@ public class SheetData
 			}
 		}
 		currImgData = new ImageData(spriteSheet, this);
+		currImgData.setImageType(ImageType.SHEET);
 		currImgData.setButton(button);
 		imgs.add(currImgData);
 	}
@@ -48,6 +52,26 @@ public class SheetData
 		ImageData iData = new ImageData(rect, img, this);
 		iData.setButton(button);
 		imgs.add(iData);
+	}
+	
+	public void removeImageData(Rectangle rect){
+		ImageData match = null;
+		for (ImageData iData : imgs){
+			if (rect.equals(iData.getRect())){
+				match = iData;
+				JPanel p = (JPanel) iData.getButton().getParent();
+				p.remove(iData.getButton());
+				p.invalidate();
+				p.repaint();
+				MainWindow.MAIN_WINDOW.getCanvas().repaint();
+				break;
+			}
+		}
+		if (match != null){
+			imgs.remove(match);
+		} else {
+			System.out.println("Could not find image");
+		}
 	}
 	
 	public void setCurrentImage(JButton button){
@@ -74,5 +98,9 @@ public class SheetData
 	
 	public BufferedImage getCurrentImage(){
 		return currImgData.getImage();
+	}
+	
+	public LinkedList<ImageData> getAllImageData(){
+		return imgs;
 	}
 }

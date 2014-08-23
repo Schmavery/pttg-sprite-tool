@@ -10,20 +10,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import main.Canvas;
+import main.ImageData;
+import main.ImageData.ImageType;
 import main.MainWindow;
 
 public class SnipTool extends Tool
 {
-	public boolean autoSnip = false;
-	private enum SnipState {START, FIRST, SECOND};
-	private static final Color BOXCOLOR = new Color(84, 232, 255);
+	private enum SnipState {START, FIRST, SECOND, SELECTED};
+	private static final Color MAKE_BOX_COLOR = new Color(84, 232, 255);
 	private SnipState state = SnipState.START;
+	private boolean autoSnip = false;
 	private Rectangle rect;
+	
+	private JButton deleteButton;
 	
 	public SnipTool(){
 		super("Snip Tool", "res/scissors.png");
@@ -39,7 +45,22 @@ public class SnipTool extends Tool
 				autoSnip = !autoSnip;
 			}
 		});
+		
+		deleteButton = new JButton("Delete?");
+		deleteButton.setBackground(Color.RED);
+		deleteButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				MainWindow.MAIN_WINDOW.getSheetData().removeImageData(rect);
+				SnipTool.this.selected();
+			}
+		});
+
 		oPanel.add(chk);
+		oPanel.add(Box.createVerticalGlue());
+		oPanel.add(deleteButton);
 		setOptionInnerPanel(oPanel);
 	}
 	
@@ -48,6 +69,11 @@ public class SnipTool extends Tool
 		super.selected();
 		state = SnipState.START;
 		rect = null;
+		setDeleteVisibility(false);
+	}
+	
+	private void setDeleteVisibility(boolean b){
+		deleteButton.setVisible(b);
 	}
 	
 	@Override
@@ -58,12 +84,25 @@ public class SnipTool extends Tool
 		} else {
 			switch (state){
 			case START:
-				rect = new Rectangle();
-				rect.setLocation(x, y);
-				state = SnipState.FIRST;
+				// Check if you clicked in an existing rect
+				boolean exists = false;
+				for (ImageData iData : MainWindow.MAIN_WINDOW.getSheetData().getAllImageData()){
+					if (iData.getType() != ImageType.SHEET && iData.getRect().contains(x, y)){
+						state = SnipState.SELECTED;
+						rect = (Rectangle) iData.getRect();
+						setDeleteVisibility(true);
+						exists = true;
+						break;
+					}
+				}
+				if (!exists){
+					rect = new Rectangle();
+					rect.setLocation(x, y);
+					state = SnipState.FIRST;
+				}
 				break;
 			case FIRST:
-				rect.setSize(x - rect.x, y - rect.y);
+				rect.setSize(x - rect.x + 1, y - rect.y + 1);
 				state = SnipState.SECOND;
 				break;
 			case SECOND:
@@ -74,6 +113,11 @@ public class SnipTool extends Tool
 				rect = null;
 				state = SnipState.START;
 				break;
+			case SELECTED:
+				rect = null;
+				state = SnipState.START;
+				setDeleteVisibility(false);
+				break;
 			default:
 				break;
 			}
@@ -81,13 +125,29 @@ public class SnipTool extends Tool
 	}
 
 	public void doAutoSnip(){
-		int imgSize = 32;
+		int imgSize = 16;
 		BufferedImage img = MainWindow.MAIN_WINDOW.getSheetData().getImage();
-		for (int i = 0; i < img.getWidth(); i += imgSize){
-			for (int j = 0; i < img.getHeight(); j += imgSize){
-				// TODO: Autosnip
+		Rectangle rect;
+		for (int i = 0; i < img.getHeight()/imgSize; i++){
+			for (int j = 0; j < img.getWidth()/imgSize; j++){
+				rect = new Rectangle(j*imgSize, i*imgSize, imgSize, imgSize);
+				if (!isEmptyImageRegion(img, rect)){
+					MainWindow.MAIN_WINDOW.getImagePanel().addSnippedImage(rect);
+				}
 			}
 		}
+	}
+	
+	private boolean isEmptyImageRegion(BufferedImage img, Rectangle rect){
+		int value = img.getRGB(rect.x, rect.y);
+		for (int i = rect.x; i < rect.x + rect.width; i++){
+			for (int j = rect.y; j < rect.y + rect.height; j++){
+				if (img.getRGB(i, j) != value){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	@Override
@@ -97,7 +157,7 @@ public class SnipTool extends Tool
 		Canvas c = MainWindow.MAIN_WINDOW.getCanvas();
 		super.drawTool(g, mouseX, mouseY);
 		if (rect != null){
-			g.setColor(BOXCOLOR);
+			g.setColor(MAKE_BOX_COLOR);
 			switch (state){
 			case FIRST:
 				g.drawRect(c.getScaledCoord(rect.x), c.getScaledCoord(rect.y), 
@@ -105,12 +165,17 @@ public class SnipTool extends Tool
 				break;
 			case SECOND:
 				g.drawRect(c.getScaledCoord(rect.x), c.getScaledCoord(rect.y), 
-						c.getScaledCoord(rect.width + 1), c.getScaledCoord(rect.height + 1));
+						c.getScaledCoord(rect.width + 1), c.getScaledCoord(rect.height));
 				break;
 			case START:
 				break;
+			case SELECTED:
+				
+				g.setColor(Color.RED);
+				g.drawRect(c.getScaledCoord(rect.x), c.getScaledCoord(rect.y), 
+						c.getScaledCoord(rect.width), c.getScaledCoord(rect.height));
 			}
-			g.setColor(Color.WHITE);
+//			g.setColor(Color.WHITE);
 		}
 	}
 }

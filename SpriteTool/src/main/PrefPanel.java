@@ -1,12 +1,14 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -109,21 +111,28 @@ public class PrefPanel extends JPanel implements ActionListener
 	}
 	
 	private void setupGeneralPanel(JPanel genPanel){
+		Dimension d = new Dimension(300, 20);
+		
 		genPanel.setLayout(new BoxLayout(genPanel, BoxLayout.Y_AXIS));
 		
-		JPanel firstPanel = new JPanel(new GridLayout(2, 2));
+		JPanel firstPanel = new JPanel(new GridLayout(4, 2));
 		firstPanel.add(new JLabel("Default Magnification:"));
 		JTextField defaultMag = new JTextField(tmpPrefs.get("defaultmag"));
+		defaultMag.setPreferredSize(d);
 		defaultMag.addActionListener(this);
 		defaultMag.getDocument().putProperty(PROP_KEY, "defaultmag");
 		defaultMag.getDocument().addDocumentListener(docListener);
 		firstPanel.add(defaultMag);
-		firstPanel.add(new JLabel("Default Magnification:"));
-//		defaultMag.addP
-//		JSpinner spin = new JSpinner();
-//		spin.addPrd
+		firstPanel.add(new JLabel("Space Filler:"));
 		firstPanel.add(new JTextField("Default..."));
+		firstPanel.add(new JLabel("Space Filler:"));
+		firstPanel.add(new JTextField("Default..."));
+		firstPanel.add(new JLabel("Space Filler:"));
+		firstPanel.add(new JTextField("Default..."));
+		
+		
 		genPanel.add(firstPanel);
+		genPanel.add(Box.createVerticalGlue());
 	}
 
 	@Override

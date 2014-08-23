@@ -13,6 +13,7 @@ public class ImageData
 	private static final int DEFAULT_SCALE = 1;
 	private Rectangle rect;
 	private SheetData owner;
+	private ImageType type;
 	private BufferedImage img;
 	private float scale;
 	private Point anchorPt;
@@ -35,16 +36,21 @@ public class ImageData
 		this.img = img;
 		this.owner = owner;
 		this.rect = rect;
+		this.type = ImageType.IMAGE;
 		if (img != null){
 			System.out.println("Img height: "+this.img.getHeight());
 		}
 		resetScale();
 	}
 	
+	public void setImageType(ImageType type){
+		this.type = type;
+	}
 	
 	public float getScale(){
 		return scale;
 	}
+	
 	
 	public float setScale(float scale){
 		scale = Math.max(1, Math.min(MAX_MAG,scale));
@@ -110,5 +116,13 @@ public class ImageData
 	
 	public JButton getButton(){
 		return button;
+	}
+	
+	public ImageType getType(){
+		return type;
+	}
+	
+	public Rectangle getRect(){
+		return rect;
 	}
 }
