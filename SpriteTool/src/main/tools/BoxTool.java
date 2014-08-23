@@ -1,10 +1,8 @@
 package main.tools;
 
-import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 

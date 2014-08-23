@@ -14,7 +14,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import sun.applet.Main;
 import main.Canvas;
 import main.MainWindow;
 
@@ -70,8 +69,6 @@ public class SnipTool extends Tool
 			case SECOND:
 				if (rect.contains(x, y)){
 					MainWindow.MAIN_WINDOW.getImagePanel().addSnippedImage(rect);
-					// Click was inside rect, confirmed
-					// TODO: Add rect to list of Boxes.
 				} else {
 				}
 				rect = null;
@@ -88,7 +85,7 @@ public class SnipTool extends Tool
 		BufferedImage img = MainWindow.MAIN_WINDOW.getSheetData().getImage();
 		for (int i = 0; i < img.getWidth(); i += imgSize){
 			for (int j = 0; i < img.getHeight(); j += imgSize){
-				
+				// TODO: Autosnip
 			}
 		}
 	}

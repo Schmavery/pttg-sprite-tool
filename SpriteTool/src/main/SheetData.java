@@ -20,10 +20,15 @@ public class SheetData
 	}
 	
 	public SheetData(String path){
-		setSheetPath(path);
+		this(path, null);
 	}
 	
-	public void setSheetPath(String path){
+	public SheetData(String path, JButton button){
+		setSheetPath(path, button);
+	}
+	
+	public void setSheetPath(String path, JButton button){
+		imgs = new LinkedList<>();
 		if (path != null){
 			try
 			{
@@ -34,10 +39,25 @@ public class SheetData
 				e.printStackTrace();
 			}
 		}
+		currImgData = new ImageData(spriteSheet, this);
+		currImgData.setButton(button);
+		imgs.add(currImgData);
 	}
 	
 	public void newImageData(Rectangle rect, BufferedImage img, JButton button){
-		ImageData iData = new ImageData(img, this);
+		ImageData iData = new ImageData(rect, img, this);
+		iData.setButton(button);
+		imgs.add(iData);
+	}
+	
+	public void setCurrentImage(JButton button){
+		for (ImageData iData : imgs){
+			if (iData.getButton().equals(button)){
+				currImgData = iData;
+				return;
+			}
+		}
+		System.out.println("Could not find button");
 	}
 	
 	public BufferedImage getImage(){
@@ -46,5 +66,13 @@ public class SheetData
 	
 	public boolean hasImage(){
 		return (spriteSheet != null);
+	}
+	
+	public ImageData getCurrentImageData(){
+		return currImgData;
+	}
+	
+	public BufferedImage getCurrentImage(){
+		return currImgData.getImage();
 	}
 }

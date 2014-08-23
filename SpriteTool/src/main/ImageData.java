@@ -8,6 +8,7 @@ import javax.swing.JButton;
 
 public class ImageData
 {
+	public static enum ImageType {SHEET, IMAGE};
 	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
 	private Rectangle rect;
@@ -27,8 +28,13 @@ public class ImageData
 	}
 	
 	public ImageData(BufferedImage img, SheetData owner){
+		this(null, img, owner);
+	}
+	
+	public ImageData(Rectangle rect, BufferedImage img, SheetData owner){
 		this.img = img;
 		this.owner = owner;
+		this.rect = rect;
 		if (img != null){
 			System.out.println("Img height: "+this.img.getHeight());
 		}
@@ -100,5 +106,9 @@ public class ImageData
 	
 	public void setButton(JButton button){
 		this.button = button;
+	}
+	
+	public JButton getButton(){
+		return button;
 	}
 }

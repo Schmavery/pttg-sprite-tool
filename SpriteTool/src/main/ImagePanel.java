@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.BoxLayout;
@@ -15,8 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import main.Canvas.CanvasType;
-import main.tools.Tools;
+import main.ImageData.ImageType;
 
 public class ImagePanel extends JPanel
 {
@@ -34,7 +35,7 @@ public class ImagePanel extends JPanel
 	public ImagePanel(){
 		sheetData = new SheetData();
 		setLayout(new BorderLayout());
-		canvas = new Canvas(CanvasType.IMAGE);
+		canvas = new Canvas(sheetData);
 		JScrollPane canvasScrollPane = new JScrollPane();
 		
 		lowerPanel = new JPanel();
@@ -56,6 +57,16 @@ public class ImagePanel extends JPanel
 		sheetButton.setHorizontalTextPosition(SwingConstants.CENTER);
 		sheetButton.setBorder(new LineBorder(Color.BLACK));
 		sheetButton.setPreferredSize(new Dimension(THUMB_WIDTH+20, THUMB_HEIGHT));
+		
+		sheetButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				ImagePanel.this.switchImage((JButton) event.getSource(), ImageType.SHEET);
+			}
+		});
+		
 		lowerPanel.add(sheetButton, BorderLayout.WEST);
 		lowerPanel.add(lowerRightScroll, BorderLayout.CENTER);
 		
@@ -80,15 +91,24 @@ public class ImagePanel extends JPanel
 
 	public void setSheetPath(String path){
 		System.out.println("setting in imgPanel: "+path);
-		sheetData.setSheetPath(path);
+		sheetData.setSheetPath(path, sheetButton);
 		canvas.setImagePath(path);
 		sheetButton.setIcon(new ImageIcon(getMaxScaledInstance(sheetData.getImage(), THUMB_WIDTH)));
+		canvas.refresh();
 		sheetButton.revalidate();
 		sheetButton.repaint();
 	}
 	
 	public SheetData getSheetData(){
 		return sheetData;
+	}
+	
+	public void switchImage(JButton src, ImageType type){
+		System.out.println("Switching image...");
+		sheetData.setCurrentImage(src);
+		getCanvas().refresh();
+		revalidate();
+		repaint();
 	}
 	
 	public void addSnippedImage(Rectangle rect){
@@ -107,6 +127,16 @@ public class ImagePanel extends JPanel
 			lowerRight.add(button);
 			lowerRight.revalidate();
 			lowerRight.repaint();
+			
+			button.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent event)
+				{
+					System.out.println("Button pressed");
+					ImagePanel.this.switchImage((JButton) event.getSource(), ImageType.IMAGE);
+				}
+			});
 			
 			sheetData.newImageData(rect, img, button);
 		}

@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -22,19 +21,17 @@ import main.tools.Tool;
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 {
 	private static final long serialVersionUID = 1L;
-	public static enum CanvasType {SHEET, IMAGE};
 	
-	private ImageData imgData;
-	private CanvasType type;
+	private SheetData sheetData;
 	
 	int mouseX = 0;
 	int mouseY = 0;
 	
-	public Canvas(CanvasType ct){
+	public Canvas(SheetData sheetData){
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		imgData = new ImageData();
-		type = ct;
+//		imgData = new ImageData();
+		this.sheetData = sheetData;
 		resetScale();
 	}
 
@@ -42,7 +39,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		try
 		{
 			BufferedImage img = ImageIO.read(new URL("file:///" + path));
-			imgData = new ImageData(img);
+//			imgData = new ImageData(img);
 		}
 		catch (IOException e)
 		{
@@ -52,24 +49,26 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	public void incScale(){
-		setScale(imgData.getScale() + 1);
+//		setScale(imgData.getScale() + 1);
+		setScale(sheetData.getCurrentImageData().getScale() + 1);
 	}
 	
 	public void decScale(){
-		setScale(imgData.getScale() - 1);
+//		setScale(imgData.getScale() - 1);
+		setScale(sheetData.getCurrentImageData().getScale() - 1);
 	}
 	
 	public ImageData getImageData(){
-		return imgData;
+		return sheetData.getCurrentImageData();
 	}
 	
 	public void setScale(float scale){
-		imgData.setScale(scale);
+		sheetData.getCurrentImageData().setScale(scale);
 		refresh();
 	}
 	
 	public void resetScale(){
-		imgData.resetScale();
+		sheetData.getCurrentImageData().resetScale();
 		refresh();
 	}
 	
@@ -79,15 +78,15 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	public int getScaledWidth(){
-		return getScaledCoord(imgData.getWidth());
+		return getScaledCoord(sheetData.getCurrentImageData().getWidth());
 	}
 	
 	public int getScaledHeight(){
-		return getScaledCoord(imgData.getHeight());
+		return getScaledCoord(sheetData.getCurrentImageData().getHeight());
 	}
 	
 	public int getScaledCoord(int coord){
-		return (int) (coord*imgData.getScale());
+		return (int) (coord*sheetData.getCurrentImageData().getScale());
 	}
 	
 	@Override
@@ -95,11 +94,13 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		ImageData imgData = sheetData.getCurrentImageData();
 		
 		if (imgData.hasImage()){
 			g.clearRect(0, 0, getScaledWidth(), getScaledHeight());
 //			g.drawImage(imgData.getImage().getScaledInstance(getScaledWidth(), 
 //					getScaledHeight(), Image.SCALE_AREA_AVERAGING), 0, 0, null);
+//			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
 			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
 			if (imgData.hasAnchor()){
 				g.setXORMode(Color.WHITE);
@@ -118,7 +119,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	
 	@Override
 	public Dimension getPreferredSize(){
-		if (imgData.hasImage()){
+		if (sheetData.getCurrentImageData().hasImage()){
 			return new Dimension(getScaledWidth(), getScaledHeight());			
 		} else {
 			return new Dimension(0,0);
@@ -164,8 +165,8 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseMoved(MouseEvent event)
 	{
-		mouseX = (int) (event.getX()/imgData.getScale());
-		mouseY = (int) (event.getY()/imgData.getScale());
+		mouseX = (int) (event.getX()/sheetData.getCurrentImageData().getScale());
+		mouseY = (int) (event.getY()/sheetData.getCurrentImageData().getScale());
 		repaint();
 	}
 }
