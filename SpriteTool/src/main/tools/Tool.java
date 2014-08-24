@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import main.ImageData.ImageType;
 import main.MainWindow;
 
 public abstract class Tool
@@ -20,9 +21,11 @@ public abstract class Tool
 	private BufferedImage img;
 	private JPanel optionsInnerPanel;
 	private JButton toolButton;
+	private ImageType worksOn;
 	
-	public Tool(String name, String path){
+	public Tool(String name, String path, ImageType worksOn){
 		toolName = name;
+		this.worksOn = worksOn;
 		try
 		{
 			img = ImageIO.read(new File(path));
@@ -61,6 +64,14 @@ public abstract class Tool
 	public void deselected(){
 		if (toolButton != null){
 			toolButton.setBackground(Color.LIGHT_GRAY);
+		}
+	}
+	
+	public void setButtonEnabledState(ImageType type){
+		if (worksOn.equals(ImageType.EITHER) || type.equals(worksOn)){
+			toolButton.setEnabled(true);
+		} else {
+			toolButton.setEnabled(false);
 		}
 	}
 	

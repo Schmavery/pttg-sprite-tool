@@ -48,6 +48,14 @@ public class SheetData
 		imgs.add(currImgData);
 	}
 	
+	public void reset(){
+		for (ImageData iData : imgs){
+			if (iData.getRect() != null)
+				removeImageData(iData.getRect());
+		}
+		imgs.clear();
+	}
+	
 	public void newImageData(Rectangle rect, BufferedImage img, JButton button){
 		ImageData iData = new ImageData(rect, img, this);
 		iData.setButton(button);

@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import main.ImageData.ImageType;
+import main.tools.Tools;
 
 public class ImagePanel extends JPanel
 {
@@ -63,6 +64,7 @@ public class ImagePanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent event)
 			{
+				Tools.setButtonEnabledState(ImageType.SHEET);
 				ImagePanel.this.switchImage((JButton) event.getSource(), ImageType.SHEET);
 			}
 		});
@@ -91,6 +93,7 @@ public class ImagePanel extends JPanel
 
 	public void setSheetPath(String path){
 		System.out.println("setting in imgPanel: "+path);
+		sheetData.reset();
 		sheetData.setSheetPath(path, sheetButton);
 		canvas.setImagePath(path);
 		sheetButton.setIcon(new ImageIcon(getMaxScaledInstance(sheetData.getImage(), THUMB_WIDTH)));
@@ -105,7 +108,7 @@ public class ImagePanel extends JPanel
 	}
 	
 	public void switchImage(JButton src, ImageType type){
-		System.out.println("Switching image...");
+//		System.out.println("Switching image...");
 		sheetData.setCurrentImage(src);
 		getCanvas().refresh();
 		revalidate();
@@ -113,8 +116,15 @@ public class ImagePanel extends JPanel
 	}
 	
 	public void addSnippedImage(Rectangle rect){
-		System.out.println("Cut Image Added");
 		if (sheetData.hasImage() && rect != null){
+			// Check if this rect overlaps another.
+			for (ImageData iData : sheetData.getAllImageData()){
+				if (iData.getType().equals(ImageType.IMAGE) && iData.getRect().intersects(rect)){
+//					System.out.println("This intersects another rectangle");
+					return;
+				}
+			}
+			
 			BufferedImage img = sheetData.getImage().getSubimage(rect.x, rect.y, rect.width, rect.height);
 			ImageIcon ii = new ImageIcon(getMaxScaledInstance(img, THUMB_WIDTH));
 			JButton button = new JButton(ii);
@@ -134,12 +144,14 @@ public class ImagePanel extends JPanel
 				@Override
 				public void actionPerformed(ActionEvent event)
 				{
-					System.out.println("Button pressed");
+//					System.out.println("Button pressed");
+					Tools.setButtonEnabledState(ImageType.IMAGE);
 					ImagePanel.this.switchImage((JButton) event.getSource(), ImageType.IMAGE);
 				}
 			});
 			
 			sheetData.newImageData(rect, img, button);
+			System.out.println("Cut Image Added");
 		}
 	}
 }

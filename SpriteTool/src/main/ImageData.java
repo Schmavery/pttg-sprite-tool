@@ -8,7 +8,7 @@ import javax.swing.JButton;
 
 public class ImageData
 {
-	public static enum ImageType {SHEET, IMAGE};
+	public static enum ImageType {SHEET, IMAGE, EITHER};
 	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
 	private Rectangle rect;

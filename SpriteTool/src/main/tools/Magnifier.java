@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import main.ImageData;
+import main.ImageData.ImageType;
 import main.MainWindow;
 
 public class Magnifier extends Tool
@@ -18,7 +19,7 @@ public class Magnifier extends Tool
 	JTextField magAmt;
 	
 	public Magnifier(){
-		super("Magnifier", "res/mag.png");
+		super("Magnifier", "res/mag.png", ImageType.EITHER);
 		
 		JPanel oPanel = new JPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));

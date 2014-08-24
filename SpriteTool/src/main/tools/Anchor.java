@@ -6,13 +6,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import main.MainWindow;
+import main.ImageData.ImageType;
 
 public class Anchor extends Tool
 {
 
 	public Anchor()
 	{
-		super("Anchor", "res/anchor.png");
+		super("Anchor", "res/anchor.png", ImageType.IMAGE);
 		JPanel oPanel = new JPanel();
 		oPanel.add(new JLabel("Anchor"));
 		setOptionInnerPanel(oPanel);

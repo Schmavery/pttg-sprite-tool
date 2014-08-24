@@ -87,7 +87,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		return getScaledCoord(sheetData.getCurrentImageData().getHeight());
 	}
 	
-	public int getScaledCoord(int coord){
+	public int getScaledCoord(double coord){
 		return (int) (coord*sheetData.getCurrentImageData().getScale());
 	}
 	

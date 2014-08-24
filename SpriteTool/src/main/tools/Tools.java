@@ -1,5 +1,7 @@
 package main.tools;
 
+import main.ImageData.ImageType;
+
 public class Tools
 {
 	private Tools(){}
@@ -7,6 +9,7 @@ public class Tools
 	private static Anchor anchor = new Anchor();
 	private static BoxTool boxTool = new BoxTool();
 	private static SnipTool snipTool = new SnipTool();
+	private static Tool[] tools = {mag, anchor, boxTool, snipTool};
 	
 	public static Magnifier getMagnifier(){
 		return mag;
@@ -22,5 +25,11 @@ public class Tools
 
 	public static SnipTool getSnipTool(){
 		return snipTool;
+	}
+	
+	public static void setButtonEnabledState(ImageType type){
+		for (Tool t : tools){
+			t.setButtonEnabledState(type);
+		}
 	}
 }

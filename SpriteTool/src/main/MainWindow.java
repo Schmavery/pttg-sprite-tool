@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
+import main.ImageData.ImageType;
 import main.tools.Tool;
 import main.tools.Tools;
 
@@ -159,9 +160,9 @@ public class MainWindow extends JFrame
 		toolbar.setBorder(new TitledBorder("Toolbar"));
 		
 		createToolbarButton(Tools.getMagnifier(), toolbar);
+		createToolbarButton(Tools.getSnipTool(), toolbar);
 		createToolbarButton(Tools.getAnchor(), toolbar);
 		createToolbarButton(Tools.getBoxTool(), toolbar);
-		createToolbarButton(Tools.getSnipTool(), toolbar);
 
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));
@@ -228,6 +229,7 @@ public class MainWindow extends JFrame
 	public void setSheetPath(String path){
 		System.out.println("Setting image");
 		imagePanel.setSheetPath(path);
+		Tools.setButtonEnabledState(ImageType.SHEET);
 	}	
 	
 	public Tool getCurrentTool(){

@@ -32,7 +32,7 @@ public class SnipTool extends Tool
 	private JButton deleteButton;
 	
 	public SnipTool(){
-		super("Snip Tool", "res/scissors.png");
+		super("Snip Tool", "res/scissors.png", ImageType.SHEET);
 		
 		JPanel oPanel = new JPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
