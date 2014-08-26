@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -154,4 +155,11 @@ public class ImagePanel extends JPanel
 			System.out.println("Cut Image Added");
 		}
 	}
+	
+//	public void addCollisionPoly(Polygon p){
+//		if (p != null){
+//			canvas.getImageData().setPoly(p);
+//			System.out.println("Poly added");
+//		}
+//	}
 }

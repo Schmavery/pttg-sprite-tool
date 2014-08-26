@@ -26,7 +26,9 @@ public class SnipTool extends Tool
 	private enum SnipState {START, FIRST, SECOND, SELECTED};
 	private static final Color MAKE_BOX_COLOR = new Color(84, 232, 255);
 	private SnipState state = SnipState.START;
-	private boolean autoSnip = false;
+//	private boolean autoSnip = false;
+	
+	private JCheckBox autoSnip;
 	private Rectangle rect;
 	
 	private JButton deleteButton;
@@ -36,15 +38,7 @@ public class SnipTool extends Tool
 		
 		JPanel oPanel = new JPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
-		JCheckBox chk = new JCheckBox("Autosnip");
-		chk.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				autoSnip = !autoSnip;
-			}
-		});
+		autoSnip = new JCheckBox("Autosnip");
 		
 		deleteButton = new JButton("Delete?");
 		deleteButton.setBackground(Color.RED);
@@ -58,7 +52,7 @@ public class SnipTool extends Tool
 			}
 		});
 
-		oPanel.add(chk);
+		oPanel.add(autoSnip);
 		oPanel.add(Box.createVerticalGlue());
 		oPanel.add(deleteButton);
 		setOptionInnerPanel(oPanel);
@@ -79,8 +73,9 @@ public class SnipTool extends Tool
 	@Override
 	public void onClick(MouseEvent event, int x, int y)
 	{
-		if (autoSnip){
+		if (autoSnip.isSelected()){
 			doAutoSnip();
+			autoSnip.setSelected(false);
 		} else {
 			switch (state){
 			case START:
@@ -102,6 +97,10 @@ public class SnipTool extends Tool
 				}
 				break;
 			case FIRST:
+				if (x <= rect.x || y <= rect.y){
+					rect.setLocation(x, y);
+					break;
+				}
 				rect.setSize(x - rect.x + 1, y - rect.y + 1);
 				state = SnipState.SECOND;
 				break;

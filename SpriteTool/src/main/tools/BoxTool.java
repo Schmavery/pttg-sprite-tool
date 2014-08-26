@@ -77,6 +77,7 @@ public class BoxTool extends Tool
 			}
 			if (poly.contains(x, y)){
 				System.out.println("You clicked in the poly!");
+				MainWindow.MAIN_WINDOW.getCanvas().getImageData().setPoly(poly);
 			}
 			state = BoxState.START;
 			//TODO: Save point list

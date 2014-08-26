@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
@@ -12,6 +13,7 @@ public class ImageData
 	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
 	private Rectangle rect;
+	private Polygon collisionPoly;
 	private SheetData owner;
 	private ImageType type;
 	private BufferedImage img;
@@ -124,5 +126,13 @@ public class ImageData
 	
 	public Rectangle getRect(){
 		return rect;
+	}
+	
+	public void setPoly(Polygon p){
+		collisionPoly = p;
+	}
+	
+	public Polygon getPoly(){
+		return collisionPoly;
 	}
 }
