@@ -5,6 +5,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
+import panels.PrefPanel;
+
 
 public class PrefAction extends AbstractAction
 {

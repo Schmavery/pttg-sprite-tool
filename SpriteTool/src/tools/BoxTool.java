@@ -1,4 +1,4 @@
-package main.tools;
+package tools;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -71,13 +71,16 @@ public class BoxTool extends Tool
 			break;
 		case CONFIRM:
 			// check if you clicked in the poly.
-			Polygon poly = new Polygon();
+			Polygon tmpPoly = new Polygon();
 			for (Point pt : pts){
-				poly.addPoint(pt.x, pt.y);
+				tmpPoly.addPoint(pt.x, pt.y);
 			}
-			if (poly.contains(x, y)){
+			
+			
+			
+			if (tmpPoly.contains(x, y)){
 				System.out.println("You clicked in the poly!");
-				MainWindow.MAIN_WINDOW.getCanvas().getImageData().setPoly(poly);
+				MainWindow.MAIN_WINDOW.getCanvas().getImageData().setPoly(tmpPoly);
 			}
 			state = BoxState.START;
 			//TODO: Save point list

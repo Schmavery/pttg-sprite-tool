@@ -1,4 +1,4 @@
-package main;
+package panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,8 +18,11 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import tools.Tools;
+import main.Canvas;
+import main.ImageData;
+import main.SheetData;
 import main.ImageData.ImageType;
-import main.tools.Tools;
 
 public class ImagePanel extends JPanel
 {

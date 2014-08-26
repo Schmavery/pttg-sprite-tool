@@ -25,9 +25,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
+import panels.ImagePanel;
+import panels.OptionsPanel;
+import panels.StatusPanel;
+import tools.Tool;
+import tools.Tools;
 import main.ImageData.ImageType;
-import main.tools.Tool;
-import main.tools.Tools;
 
 
 public class MainWindow extends JFrame

@@ -17,8 +17,8 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import tools.Tool;
 import main.ImageData.ImageType;
-import main.tools.Tool;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 {

@@ -1,4 +1,4 @@
-package main;
+package panels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+
+import main.Preferences;
 
 public class PrefPanel extends JPanel implements ActionListener
 {

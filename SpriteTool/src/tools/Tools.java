@@ -1,4 +1,4 @@
-package main.tools;
+package tools;
 
 import main.ImageData.ImageType;
 
