@@ -30,7 +30,7 @@ public class Magnifier extends Tool
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				ImageData iData = MainWindow.MAIN_WINDOW.getCanvas().getImageData();
+				ImageData iData = MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData();
 				float scale = 1;
 				try {
 					scale = Float.parseFloat(magAmt.getText());
@@ -48,7 +48,7 @@ public class Magnifier extends Tool
 	
 	@Override
 	public void resetOptionsInnerPanel(){
-		magAmt.setText(formatFloat(MainWindow.MAIN_WINDOW.getCanvas().getImageData().getScale()));
+		magAmt.setText(formatFloat(MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().getScale()));
 	}
 	
 	@Override

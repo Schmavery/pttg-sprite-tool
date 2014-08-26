@@ -65,6 +65,7 @@ public abstract class Tool
 		if (toolButton != null){
 			toolButton.setBackground(Color.LIGHT_GRAY);
 		}
+		MainWindow.MAIN_WINDOW.getCanvas().refresh();
 	}
 	
 	public void setButtonEnabledState(ImageType type){
@@ -76,10 +77,10 @@ public abstract class Tool
 	}
 	
 	public void onClick(MouseEvent event){
-		float scale = MainWindow.MAIN_WINDOW.getCanvas().getImageData().getScale();
+		float scale = MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().getScale();
 		int x = (int) (event.getX()/scale);
 		int y = (int) (event.getY()/scale);
-		if (MainWindow.MAIN_WINDOW.getCanvas().getImageData().inBounds(x, y)){
+		if (MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().inBounds(x, y)){
 			onClick(event, x, y);
 		}
 	}

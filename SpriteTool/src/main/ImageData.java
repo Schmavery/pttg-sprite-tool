@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 
@@ -12,6 +13,8 @@ public class ImageData
 	public static enum ImageType {SHEET, IMAGE, EITHER};
 	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
+	
+	private LinkedList<Hook> hooks;
 	private Rectangle rect;
 	private Polygon collisionPoly;
 	private SheetData owner;
@@ -38,6 +41,7 @@ public class ImageData
 		this.img = img;
 		this.owner = owner;
 		this.rect = rect;
+		this.hooks = new LinkedList<>();
 		this.type = ImageType.IMAGE;
 		if (img != null){
 			System.out.println("Img height: "+this.img.getHeight());
@@ -57,6 +61,7 @@ public class ImageData
 	public float setScale(float scale){
 		scale = Math.max(1, Math.min(MAX_MAG,scale));
 		this.scale = scale;
+		MainWindow.MAIN_WINDOW.getCanvas().refresh();
 		System.out.println("Set scale to "+scale);
 		return scale;
 	}
@@ -134,5 +139,17 @@ public class ImageData
 	
 	public Polygon getPoly(){
 		return collisionPoly;
+	}
+	
+	public LinkedList<Hook> getHooks(){
+		return hooks;
+	}
+	
+	public void addHook(Hook h){
+		hooks.add(h);
+	}
+	
+	public void clearHooks(){
+		hooks.clear();
 	}
 }

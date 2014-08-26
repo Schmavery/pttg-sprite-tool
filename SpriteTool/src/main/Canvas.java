@@ -51,17 +51,11 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	public void incScale(){
-//		setScale(imgData.getScale() + 1);
 		setScale(sheetData.getCurrentImageData().getScale() + 1);
 	}
 	
 	public void decScale(){
-//		setScale(imgData.getScale() - 1);
 		setScale(sheetData.getCurrentImageData().getScale() - 1);
-	}
-	
-	public ImageData getImageData(){
-		return sheetData.getCurrentImageData();
 	}
 	
 	public void setScale(float scale){
@@ -100,11 +94,7 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 		
 		if (imgData.hasImage()){
 			g.clearRect(0, 0, getScaledWidth(), getScaledHeight());
-//			g.drawImage(imgData.getImage().getScaledInstance(getScaledWidth(), 
-//					getScaledHeight(), Image.SCALE_AREA_AVERAGING), 0, 0, null);
-//			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
 			g2.drawImage(imgData.getImage(), 0, 0, getScaledWidth(), getScaledHeight(), null);
-			
 			
 			if (imgData.hasAnchor()){
 				g.setXORMode(Color.WHITE);
@@ -142,6 +132,18 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 								getScaledCoord(xCoords[(i + 1) % imgData.getPoly().npoints]), 
 								getScaledCoord(yCoords[(i + 1) % imgData.getPoly().npoints]));
 					}
+				}
+				
+				for (Hook h : imgData.getHooks()){
+					g.setColor(Color.CYAN);
+					g.fillOval(getScaledCoord(h.getPt().x), getScaledCoord(h.getPt().y), 
+							getScaledCoord(1), getScaledCoord(1));
+//					g.fillRect(getScaledCoord(h.getPt().x), getScaledCoord(h.getPt().y), 
+//							getScaledCoord(1), getScaledCoord(1));
+//					((Graphics2D) g).setStroke(new BasicStroke(2));
+					g.setColor(Color.WHITE);
+					g.drawOval(getScaledCoord(h.getPt().x), getScaledCoord(h.getPt().y), 
+							getScaledCoord(1), getScaledCoord(1));
 				}
 			}
 			

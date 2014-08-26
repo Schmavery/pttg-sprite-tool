@@ -24,9 +24,7 @@ import main.MainWindow;
 public class SnipTool extends Tool
 {
 	private enum SnipState {START, FIRST, SECOND, SELECTED};
-	private static final Color MAKE_BOX_COLOR = new Color(84, 232, 255);
 	private SnipState state = SnipState.START;
-//	private boolean autoSnip = false;
 	
 	private JCheckBox autoSnip;
 	private Rectangle rect;
@@ -156,7 +154,7 @@ public class SnipTool extends Tool
 		Canvas c = MainWindow.MAIN_WINDOW.getCanvas();
 		super.drawTool(g, mouseX, mouseY);
 		if (rect != null){
-			g.setColor(MAKE_BOX_COLOR);
+			g.setColor(Color.CYAN);
 			switch (state){
 			case FIRST:
 				g.drawRect(c.getScaledCoord(rect.x), c.getScaledCoord(rect.y), 
@@ -174,7 +172,6 @@ public class SnipTool extends Tool
 				g.drawRect(c.getScaledCoord(rect.x), c.getScaledCoord(rect.y), 
 						c.getScaledCoord(rect.width), c.getScaledCoord(rect.height));
 			}
-//			g.setColor(Color.WHITE);
 		}
 	}
 }

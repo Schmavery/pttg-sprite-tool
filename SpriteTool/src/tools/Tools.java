@@ -9,7 +9,8 @@ public class Tools
 	private static Anchor anchor = new Anchor();
 	private static BoxTool boxTool = new BoxTool();
 	private static SnipTool snipTool = new SnipTool();
-	private static Tool[] tools = {mag, anchor, boxTool, snipTool};
+	private static HookTool hookTool = new HookTool();
+	private static Tool[] tools = {mag, anchor, boxTool, snipTool, hookTool};
 	
 	public static Magnifier getMagnifier(){
 		return mag;
@@ -25,6 +26,10 @@ public class Tools
 
 	public static SnipTool getSnipTool(){
 		return snipTool;
+	}
+	
+	public static HookTool getHookTool(){
+		return hookTool;
 	}
 	
 	public static void setButtonEnabledState(ImageType type){

@@ -47,7 +47,7 @@ public class BoxTool extends Tool
 	public void onClick(MouseEvent event, int x, int y)
 	{
 		MainWindow mw = MainWindow.MAIN_WINDOW;
-		ImageData iData = mw.getCanvas().getImageData();
+		ImageData iData = mw.getSheetData().getCurrentImageData();
 		
 		switch(state){
 		case START:
@@ -80,7 +80,7 @@ public class BoxTool extends Tool
 			
 			if (tmpPoly.contains(x, y)){
 				System.out.println("You clicked in the poly!");
-				MainWindow.MAIN_WINDOW.getCanvas().getImageData().setPoly(tmpPoly);
+				MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().setPoly(tmpPoly);
 			}
 			state = BoxState.START;
 			//TODO: Save point list

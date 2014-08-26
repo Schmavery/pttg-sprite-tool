@@ -166,6 +166,7 @@ public class MainWindow extends JFrame
 		createToolbarButton(Tools.getSnipTool(), toolbar);
 		createToolbarButton(Tools.getAnchor(), toolbar);
 		createToolbarButton(Tools.getBoxTool(), toolbar);
+		createToolbarButton(Tools.getHookTool(), toolbar);
 
 		toolbar.add(new JButton("A"));
 		toolbar.add(new JButton("A"));

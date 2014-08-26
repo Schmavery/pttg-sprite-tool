@@ -22,10 +22,6 @@ public class Anchor extends Tool
 	@Override
 	public void onClick(MouseEvent event, int x, int y)
 	{
-//		ImageData imgData = MainWindow.MAIN_WINDOW.getCanvas().getImageData();
-//		int x = (int) (event.getX()/imgData.getScale());
-//		int y = (int) (event.getY()/imgData.getScale());
-//		imgData.setAnchor(x, y);
-		MainWindow.MAIN_WINDOW.getCanvas().getImageData().setAnchor(x, y);
+		MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().setAnchor(x, y);
 	}
 }
