@@ -51,6 +51,7 @@ public class ImageData
 	
 	public void setImageType(ImageType type){
 		this.type = type;
+		resetScale();
 	}
 	
 	public float getScale(){
@@ -68,7 +69,11 @@ public class ImageData
 	
 	public void resetScale(){
 		try{
-			scale = Integer.parseInt(Preferences.PREFS.get("defaultmag"));
+			if (type.equals(ImageType.IMAGE)){
+				scale = Integer.parseInt(Preferences.PREFS.get("image_mag"));
+			} else {
+				scale = Integer.parseInt(Preferences.PREFS.get("sheet_mag"));
+			}
 		} catch (NumberFormatException e){
 			scale = DEFAULT_SCALE;
 			Preferences.PREFS.set("defaultmag", String.valueOf(DEFAULT_SCALE));

@@ -25,12 +25,12 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
+import main.ImageData.ImageType;
 import panels.ImagePanel;
 import panels.OptionsPanel;
 import panels.StatusPanel;
 import tools.Tool;
 import tools.Tools;
-import main.ImageData.ImageType;
 
 
 public class MainWindow extends JFrame
@@ -159,7 +159,7 @@ public class MainWindow extends JFrame
 	private void setupToolbar(JPanel toolbarShell){
 		toolbarShell.setLayout(new BorderLayout());
 		
-		JPanel toolbar = new JPanel(new GridLayout(5, 3, 3, 3));
+		JPanel toolbar = new JPanel(new GridLayout(5, 1, 3, 3));
 		toolbar.setBorder(new TitledBorder("Toolbar"));
 		
 		createToolbarButton(Tools.getMagnifier(), toolbar);
@@ -168,19 +168,20 @@ public class MainWindow extends JFrame
 		createToolbarButton(Tools.getBoxTool(), toolbar);
 		createToolbarButton(Tools.getHookTool(), toolbar);
 
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
-		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
+//		toolbar.add(new JButton("A"));
 		
 		optionsPanel = new OptionsPanel();
+		Dimension d = new Dimension(150, 150);
+		optionsPanel.setPreferredSize(d);
 		optionsPanel.setBorder(new TitledBorder("Options"));
 		toolbarShell.add(optionsPanel, BorderLayout.CENTER);
 		toolbarShell.add(toolbar, BorderLayout.NORTH);		

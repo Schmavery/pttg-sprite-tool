@@ -40,8 +40,6 @@ public class Preferences implements Cloneable
 	 
 	        // Try loading properties from the file (if found)
 	        properties.load(in);
-	//	    serverAddr = props.getProperty("ServerAddress", "192.168.0.1");
-	//	    serverPort = new Integer(props.getProperty("ServerPort", "8080"));
 	    }
 	    catch ( Exception e ) { 
 	    	System.out.println("Could not load preferences.");
@@ -52,7 +50,9 @@ public class Preferences implements Cloneable
 	}
 	
 	private void loadDefaults(){
-		set("defaultmag", "3");
+		set("sheet_mag", "3");
+		set("image_mag", "30");
+		set("autosnip_size", "16");
 	}
 	
 	public void savePrefChanges() {

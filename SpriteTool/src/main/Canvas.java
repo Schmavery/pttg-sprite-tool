@@ -10,15 +10,11 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import tools.Tool;
 import main.ImageData.ImageType;
+import tools.Tool;
 
 public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 {
@@ -32,24 +28,10 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 	public Canvas(SheetData sheetData){
 		addMouseListener(this);
 		addMouseMotionListener(this);
-//		imgData = new ImageData();
 		this.sheetData = sheetData;
 		resetScale();
 	}
 
-	public void setImagePath(String path){
-		try
-		{
-			BufferedImage img = ImageIO.read(new URL("file:///" + path));
-//			imgData = new ImageData(img);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		refresh();
-	}
-	
 	public void incScale(){
 		setScale(sheetData.getCurrentImageData().getScale() + 1);
 	}
@@ -138,9 +120,6 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 					g.setColor(Color.CYAN);
 					g.fillOval(getScaledCoord(h.getPt().x), getScaledCoord(h.getPt().y), 
 							getScaledCoord(1), getScaledCoord(1));
-//					g.fillRect(getScaledCoord(h.getPt().x), getScaledCoord(h.getPt().y), 
-//							getScaledCoord(1), getScaledCoord(1));
-//					((Graphics2D) g).setStroke(new BasicStroke(2));
 					g.setColor(Color.WHITE);
 					g.drawOval(getScaledCoord(h.getPt().x), getScaledCoord(h.getPt().y), 
 							getScaledCoord(1), getScaledCoord(1));

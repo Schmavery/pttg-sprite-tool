@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,11 +17,12 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import tools.Tools;
 import main.Canvas;
 import main.ImageData;
-import main.SheetData;
+import main.MainWindow;
 import main.ImageData.ImageType;
+import main.SheetData;
+import tools.Tools;
 
 public class ImagePanel extends JPanel
 {
@@ -99,7 +99,6 @@ public class ImagePanel extends JPanel
 		System.out.println("setting in imgPanel: "+path);
 		sheetData.reset();
 		sheetData.setSheetPath(path, sheetButton);
-		canvas.setImagePath(path);
 		sheetButton.setIcon(new ImageIcon(getMaxScaledInstance(sheetData.getImage(), THUMB_WIDTH)));
 		sheetButton.setText("View Canvas");
 		canvas.refresh();
@@ -112,11 +111,9 @@ public class ImagePanel extends JPanel
 	}
 	
 	public void switchImage(JButton src, ImageType type){
-//		System.out.println("Switching image...");
 		sheetData.setCurrentImage(src);
+		MainWindow.MAIN_WINDOW.getCurrentTool().resetOptionsInnerPanel();
 		getCanvas().refresh();
-		revalidate();
-		repaint();
 	}
 	
 	public void addSnippedImage(Rectangle rect){
@@ -148,7 +145,6 @@ public class ImagePanel extends JPanel
 				@Override
 				public void actionPerformed(ActionEvent event)
 				{
-//					System.out.println("Button pressed");
 					Tools.setButtonEnabledState(ImageType.IMAGE);
 					ImagePanel.this.switchImage((JButton) event.getSource(), ImageType.IMAGE);
 				}
@@ -158,11 +154,4 @@ public class ImagePanel extends JPanel
 			System.out.println("Cut Image Added");
 		}
 	}
-	
-//	public void addCollisionPoly(Polygon p){
-//		if (p != null){
-//			canvas.getImageData().setPoly(p);
-//			System.out.println("Poly added");
-//		}
-//	}
 }

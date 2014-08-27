@@ -20,6 +20,7 @@ import main.Canvas;
 import main.ImageData;
 import main.ImageData.ImageType;
 import main.MainWindow;
+import main.Preferences;
 
 public class SnipTool extends Tool
 {
@@ -122,7 +123,7 @@ public class SnipTool extends Tool
 	}
 
 	public void doAutoSnip(){
-		int imgSize = 16;
+		int imgSize = Integer.parseInt(Preferences.PREFS.get("autosnip_size"));
 		BufferedImage img = MainWindow.MAIN_WINDOW.getSheetData().getImage();
 		Rectangle rect;
 		for (int i = 0; i < img.getHeight()/imgSize; i++){

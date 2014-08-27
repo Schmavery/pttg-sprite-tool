@@ -23,30 +23,25 @@ public class HookTool extends Tool
 	private Hook currHook;
 	
 	private JTextField text;
-	private JButton accept, delete;
+	private JButton accept;
 	
 	public HookTool(){
 		super("Hook Tool", "res/pencil.png", ImageType.IMAGE);
 		
 		JPanel oPanel = new JPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
-//		oPanel.add(new JLabel(getName()));
 
-		text = new JTextField();
-		accept = new JButton("Update Hook Name");
-		accept.addActionListener(new ActionListener(){
+		ActionListener acceptListener = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent event){
 				HookTool.this.updateName();
 			}
-		});
-		delete = new JButton("Delete Hook");
-		delete.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent event){
-				HookTool.this.deleteHook();
-			}
-		});
+		};
+		
+		text = new JTextField();
+		text.addActionListener(acceptListener);
+		accept = new JButton("Update Hook Name");
+		accept.addActionListener(acceptListener);
 
 		oPanel.add(text);
 		oPanel.add(accept);
@@ -82,12 +77,12 @@ public class HookTool extends Tool
 	
 	private void setNamePanelVisible(boolean b){
 		System.out.println("Setting visible: "+b);
-		if (currHook != null){
+		if (b){
 			text.setText(currHook.getName());
+			text.requestFocusInWindow();
 		}
 		text.setVisible(b);
 		accept.setVisible(b);
-		delete.setVisible(b);
 	}
 	
 	@Override

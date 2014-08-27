@@ -12,7 +12,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -113,28 +112,67 @@ public class PrefPanel extends JPanel implements ActionListener
 	}
 	
 	private void setupGeneralPanel(JPanel genPanel){
-		Dimension d = new Dimension(300, 20);
 		
 		genPanel.setLayout(new BoxLayout(genPanel, BoxLayout.Y_AXIS));
 		
 		JPanel firstPanel = new JPanel(new GridLayout(4, 2));
-		firstPanel.add(new JLabel("Default Magnification:"));
-		JTextField defaultMag = new JTextField(tmpPrefs.get("defaultmag"));
-		defaultMag.setPreferredSize(d);
-		defaultMag.addActionListener(this);
-		defaultMag.getDocument().putProperty(PROP_KEY, "defaultmag");
-		defaultMag.getDocument().addDocumentListener(docListener);
-		firstPanel.add(defaultMag);
-		firstPanel.add(new JLabel("Space Filler:"));
-		firstPanel.add(new JTextField("Default..."));
-		firstPanel.add(new JLabel("Space Filler:"));
-		firstPanel.add(new JTextField("Default..."));
-		firstPanel.add(new JLabel("Space Filler:"));
-		firstPanel.add(new JTextField("Default..."));
+		
+//		JLabel l;
+//		JTextField txt;
+		
+		addPrefItem("Sheet Magnification:", "sheet_mag", firstPanel);
+		addPrefItem("Image Magnification:", "image_mag", firstPanel);
+		addPrefItem("AutoSnip Size (px):", "autosnip_size", firstPanel);
+		
+//		l = new JLabel("Sheet Magnification:");
+//		l.setHorizontalAlignment(JLabel.CENTER);
+//		firstPanel.add(l);
+//		txt = new JTextField(tmpPrefs.get("defaultmag"));
+//		txt.setPreferredSize(d);
+//		txt.addActionListener(this);
+//		txt.getDocument().putProperty(PROP_KEY, "defaultmag");
+//		txt.getDocument().addDocumentListener(docListener);
+//		firstPanel.add(txt);
+//		
+//		l = new JLabel("Image Magnification:");
+//		l.setHorizontalAlignment(JLabel.CENTER);
+//		firstPanel.add(l);
+//		firstPanel.add(new JTextField("Default..."));
+////		txt = new JTextField(tmpPrefs.get("defaultmag"));
+//		txt.setPreferredSize(d);
+//		txt.addActionListener(this);
+//		txt.getDocument().putProperty(PROP_KEY, "defaultmag");
+//		txt.getDocument().addDocumentListener(docListener);
+//		firstPanel.add(txt);
+//		
+//		l = new JLabel("AutoSnip Size (px):");
+//		l.setHorizontalAlignment(JLabel.CENTER);
+//		firstPanel.add(l);
+////		firstPanel.add(new JTextField("Default..."));
+//		txt = new JTextField(tmpPrefs.get("defaultmag"));
+//		txt.setPreferredSize(d);
+//		txt.addActionListener(this);
+//		txt.getDocument().putProperty(PROP_KEY, "defaultmag");
+//		txt.getDocument().addDocumentListener(docListener);
+//		firstPanel.add(txt);
 		
 		
 		genPanel.add(firstPanel);
 		genPanel.add(Box.createVerticalGlue());
+	}
+	
+	private void addPrefItem(String label, String key, JPanel container){
+		Dimension d = new Dimension(200, 20);
+		JLabel l = new JLabel(label);
+		l.setHorizontalAlignment(JLabel.CENTER);
+		container.add(l);
+		
+		JTextField txt = new JTextField(tmpPrefs.get(key));
+		txt.setPreferredSize(d);
+		txt.addActionListener(this);
+		txt.getDocument().putProperty(PROP_KEY, key);
+		txt.getDocument().addDocumentListener(docListener);
+		container.add(txt);
 	}
 
 	@Override
