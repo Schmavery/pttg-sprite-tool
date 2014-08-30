@@ -81,6 +81,9 @@ public abstract class Tool
 		int x = (int) (event.getX()/scale);
 		int y = (int) (event.getY()/scale);
 		if (MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().inBounds(x, y)){
+			if (!MainWindow.MAIN_WINDOW.getCurrentTool().equals(Tools.getMagnifier())){
+				MainWindow.MAIN_WINDOW.setIsDirty(true);
+			}
 			onClick(event, x, y);
 		}
 	}

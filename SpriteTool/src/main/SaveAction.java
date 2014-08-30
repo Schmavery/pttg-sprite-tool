@@ -9,22 +9,16 @@ import javax.swing.JFileChooser;
 public class SaveAction extends AbstractAction
 {
 	private static final long serialVersionUID = 1L;
-	JFileChooser fc = new JFileChooser();
 
 	public SaveAction(){
 		super("Save");
 	}
-	
+	 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		System.out.println("Probably saving...");
-		fc.showSaveDialog(MainWindow.MAIN_WINDOW);
-		File file = fc.getSelectedFile();
-		if (file != null){
-			System.out.println(file.getAbsolutePath());
-//			MainWindow.MAIN_WINDOW.setImagePath(file.getAbsolutePath());
-		}
+		
 	}
 
 }

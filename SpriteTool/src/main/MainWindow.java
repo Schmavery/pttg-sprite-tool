@@ -17,10 +17,12 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
@@ -45,6 +47,9 @@ public class MainWindow extends JFrame
 	public OptionsPanel optionsPanel;
 	
 	public Tool currentTool = Tools.getMagnifier();
+	
+	private boolean isDirty = false;
+	private String savePath = "";
 	
 	public static void main(String[] args)
 	{
@@ -78,7 +83,8 @@ public class MainWindow extends JFrame
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(true);
 		setLocationRelativeTo(null);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		setLayout(new BorderLayout(5, 5));
 		
@@ -169,15 +175,6 @@ public class MainWindow extends JFrame
 		createToolbarButton(Tools.getHookTool(), toolbar);
 
 //		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
-//		toolbar.add(new JButton("A"));
 		
 		optionsPanel = new OptionsPanel();
 		Dimension d = new Dimension(150, 150);
@@ -231,18 +228,67 @@ public class MainWindow extends JFrame
 		return imagePanel;
 	}
 
-	public void setSheetPath(String path){
-		System.out.println("Setting image");
+	public void openImage(String path){
 		imagePanel.setSheetPath(path);
+		load(path + ".dat");
+		savePath = path;
 		Tools.setButtonEnabledState(ImageType.SHEET);
+		this.isDirty = false;
 	}	
 	
 	public Tool getCurrentTool(){
 		return currentTool;
 	}
+	
+	public void setIsDirty(boolean b){
+		this.isDirty = b;
+	}
+	
+	public void save(boolean useDefault){
+		// if save is successful
+		if (useDefault && savePath != null && !savePath.isEmpty()){
+			save(savePath);
+		} else {
+			// Display save dialog.
+			JFileChooser fc = new JFileChooser();
+			fc.showSaveDialog(MainWindow.MAIN_WINDOW);
+			File file = fc.getSelectedFile();
+			if (file != null){
+//				System.out.println(file.getAbsolutePath());
+				save(file.getAbsolutePath());
+			}
+		}
+	}
+	
+	private void save(String path){
+		this.isDirty = false;
+	}
+	
+	public void load(String path){
+		// Attempt to load data file for image.
+	}
 
 	public void exit(){
-		Preferences.PREFS.savePrefChanges();
-        System.exit(0);
+		if (isDirty){
+			// Prompt for save first
+			int result = JOptionPane.showConfirmDialog(this, 
+					"Save before exiting?", "Save?", JOptionPane.YES_NO_CANCEL_OPTION);
+//			JOptionPane.show
+			switch (result){
+			case JOptionPane.YES_OPTION:
+				save(true);
+				break;
+			case JOptionPane.NO_OPTION:
+				Preferences.PREFS.savePrefChanges();
+				System.exit(0);
+				break;
+			case JOptionPane.CANCEL_OPTION:
+				System.out.println("Cancel!");
+				return;
+			}
+		} else {
+			Preferences.PREFS.savePrefChanges();
+			System.exit(0);
+		}
 	}
 }
