@@ -178,7 +178,6 @@ public class PrefPanel extends JPanel implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent event)
 	{
-		// TODO Auto-generated method stub
 		System.out.println(event.paramString());
 	}
 
