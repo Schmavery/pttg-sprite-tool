@@ -17,7 +17,7 @@ public class ImageData
 	private LinkedList<Hook> hooks;
 	private Rectangle rect;
 	private Polygon collisionPoly;
-	private SheetData owner;
+//	private SheetData owner;
 	private ImageType type;
 	private BufferedImage img;
 	private float scale;
@@ -39,7 +39,7 @@ public class ImageData
 	
 	public ImageData(Rectangle rect, BufferedImage img, SheetData owner){
 		this.img = img;
-		this.owner = owner;
+//		this.owner = owner;
 		this.rect = rect;
 		this.hooks = new LinkedList<>();
 		this.type = ImageType.IMAGE;
@@ -156,5 +156,10 @@ public class ImageData
 	
 	public void clearHooks(){
 		hooks.clear();
+	}
+	
+	@Override
+	public String toString(){
+		return super.toString();
 	}
 }

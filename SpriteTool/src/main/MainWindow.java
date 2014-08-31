@@ -10,8 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -40,7 +44,9 @@ public class MainWindow extends JFrame
 	private static final long serialVersionUID = 1L;
 	public static final int WINDOW_HEIGHT = 700;
 	public static final int WINDOW_WIDTH = 1000;
+	public static final String DATA_SUFFIX = ".dat";
 	public static MainWindow MAIN_WINDOW;
+	
 	
 	public ImagePanel imagePanel;
 	public StatusPanel statusPanel;
@@ -48,6 +54,7 @@ public class MainWindow extends JFrame
 	
 	public Tool currentTool = Tools.getMagnifier();
 	
+	private JFileChooser fileChooser = new JFileChooser();
 	private boolean isDirty = false;
 	private String savePath = "";
 	
@@ -103,10 +110,13 @@ public class MainWindow extends JFrame
 		add(toolbarShell, BorderLayout.EAST);
 		add(menuBar, BorderLayout.NORTH);
 		add(imagePanel, BorderLayout.CENTER);
-
 		
-		
-		setupListeners();
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent event) {
+	            MainWindow.this.exit();
+	        }
+	    });
 		currentTool.selected();
 	}
 	
@@ -115,27 +125,56 @@ public class MainWindow extends JFrame
 		menuBar.add(menu);
 		menu.setMnemonic(KeyEvent.VK_F);
 		
+		JMenuItem newMI = new JMenuItem();
+		newMI.setAction(new AbstractAction("New") {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e){
+				fileChooser.showOpenDialog(MainWindow.MAIN_WINDOW);
+				File file = fileChooser.getSelectedFile();
+				if (file != null){
+					System.out.println(file.getAbsolutePath());
+					MainWindow.MAIN_WINDOW.openImage(file.getAbsolutePath(), false);
+				}
+			}
+		});
+		newMI.setMnemonic(KeyEvent.VK_N);
+		menu.add(newMI);
+		
 		JMenuItem openMI = new JMenuItem();
-		openMI.setAction(new OpenAction());
+		openMI.setAction(new AbstractAction("Open") {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e){
+				fileChooser.showOpenDialog(MainWindow.MAIN_WINDOW);
+				File file = fileChooser.getSelectedFile();
+				if (file != null){
+					System.out.println(file.getAbsolutePath());
+					MainWindow.MAIN_WINDOW.openImage(file.getAbsolutePath(), true);
+				}
+			}
+		});
 		openMI.setMnemonic(KeyEvent.VK_O);
 		menu.add(openMI);
 		
 		JMenuItem saveMI = new JMenuItem();
-		saveMI.setAction(new SaveAction());
+		saveMI.setAction(new AbstractAction("Save") {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e){
+				MainWindow.this.save(true);
+			}
+		});
 		saveMI.setMnemonic(KeyEvent.VK_S);
 		menu.add(saveMI);
 		
 		JMenuItem saveAsMI = new JMenuItem();
 		saveAsMI.setAction(new AbstractAction("Save As") {
-
 			private static final long serialVersionUID = 1L;
-
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println("Saving As?");
+			public void actionPerformed(ActionEvent e){
+				MainWindow.this.save(false);
 			}
-			
 		});
 		menu.add(saveAsMI);
 		
@@ -205,17 +244,6 @@ public class MainWindow extends JFrame
 		toolbar.add(button);
 	}
 	
-	private void setupListeners(){
-		// Save preferences on exit.
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent event) {
-	            MainWindow.this.exit();
-	        }
-	    });
-		
-	}
-	
 	public Canvas getCanvas(){
 		return imagePanel.getCanvas();
 	}
@@ -228,23 +256,26 @@ public class MainWindow extends JFrame
 		return imagePanel;
 	}
 
-	public void openImage(String path){
-		imagePanel.setSheetPath(path);
-		load(path + ".dat");
-		savePath = path;
-		Tools.setButtonEnabledState(ImageType.SHEET);
-		this.isDirty = false;
-	}	
-	
 	public Tool getCurrentTool(){
 		return currentTool;
 	}
+	
+	public void openImage(String path, boolean loadData){
+		imagePanel.setSheetPath(path);
+		savePath = path;
+		Tools.setButtonEnabledState(ImageType.SHEET);
+		if (loadData){
+			load(path + DATA_SUFFIX);
+		}
+		this.isDirty = false;
+	}	
 	
 	public void setIsDirty(boolean b){
 		this.isDirty = b;
 	}
 	
 	public void save(boolean useDefault){
+		System.out.println("Attempting save");
 		// if save is successful
 		if (useDefault && savePath != null && !savePath.isEmpty()){
 			save(savePath);
@@ -261,11 +292,30 @@ public class MainWindow extends JFrame
 	}
 	
 	private void save(String path){
+		try (PrintWriter out = new PrintWriter(path + DATA_SUFFIX)){
+			out.write("Testing!");
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Could not write to file.");
+			e.printStackTrace();
+		}
 		this.isDirty = false;
 	}
 	
 	public void load(String path){
 		// Attempt to load data file for image.
+		try (BufferedReader br = new BufferedReader(new FileReader(path))){
+			System.out.println(br.readLine());
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("No data file exists for this image.");
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void exit(){
@@ -273,7 +323,6 @@ public class MainWindow extends JFrame
 			// Prompt for save first
 			int result = JOptionPane.showConfirmDialog(this, 
 					"Save before exiting?", "Save?", JOptionPane.YES_NO_CANCEL_OPTION);
-//			JOptionPane.show
 			switch (result){
 			case JOptionPane.YES_OPTION:
 				save(true);
@@ -283,7 +332,6 @@ public class MainWindow extends JFrame
 				System.exit(0);
 				break;
 			case JOptionPane.CANCEL_OPTION:
-				System.out.println("Cancel!");
 				return;
 			}
 		} else {
