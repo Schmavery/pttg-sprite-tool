@@ -164,13 +164,15 @@ public class ImageData
 		String str = "";
 		str += "img\n";
 		
-		str += "anchor\n";
-		str += "pt (" + anchorPt.x + "," + anchorPt.y + ")\n";
+		if (anchorPt != null){
+			str += "anchor\n";
+			str += "pt (" + anchorPt.x + "," + anchorPt.y + ")\n";
+		}
 		
 		str += "hook\n";
 		str += getHooks().size() + " hooks\n";
 		for (Hook h : getHooks()){
-			str += "pt (" + h.getPt().x + "," + h.getPt().y + "\n";
+			str += "pt (" + h.getPt().x + "," + h.getPt().y + ")\n";
 			str += "name [[" + h.getName() + "]]\n";
 		}
 		
@@ -178,10 +180,12 @@ public class ImageData
 		str += "pt (" + rect.x + "," + rect.y + ")\n";
 		str += "dim " + rect.width + "w " + rect.height + "h\n";
 		
-		str += "collision_poly\n";
-		str +=  collisionPoly.npoints + " pts\n";
-		for (int i = 0; i < collisionPoly.npoints; i++){
-			str += "pt (" + collisionPoly.xpoints[i] + "," + collisionPoly.ypoints[i] + ")\n";
+		if (collisionPoly != null){
+			str += "collision_poly\n";
+			str +=  collisionPoly.npoints + " pts\n";
+			for (int i = 0; i < collisionPoly.npoints; i++){
+				str += "pt (" + collisionPoly.xpoints[i] + "," + collisionPoly.ypoints[i] + ")\n";
+			}
 		}
 		
 		return str;
