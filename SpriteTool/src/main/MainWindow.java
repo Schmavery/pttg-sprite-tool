@@ -285,7 +285,6 @@ public class MainWindow extends JFrame
 			fc.showSaveDialog(MainWindow.MAIN_WINDOW);
 			File file = fc.getSelectedFile();
 			if (file != null){
-//				System.out.println(file.getAbsolutePath());
 				save(file.getAbsolutePath());
 			}
 		}
@@ -293,7 +292,10 @@ public class MainWindow extends JFrame
 	
 	private void save(String path){
 		try (PrintWriter out = new PrintWriter(path + DATA_SUFFIX)){
-			out.write("Testing!");
+			for (ImageData iData : getSheetData().getAllImageData()){
+				out.write(iData.toString() + "\n");
+				System.out.print(iData.toString() + "\n");
+			}
 		}
 		catch (FileNotFoundException e)
 		{

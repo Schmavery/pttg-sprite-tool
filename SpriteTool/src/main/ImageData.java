@@ -160,6 +160,30 @@ public class ImageData
 	
 	@Override
 	public String toString(){
-		return super.toString();
+//		return super.toString();
+		String str = "";
+		str += "img\n";
+		
+		str += "anchor\n";
+		str += "pt (" + anchorPt.x + "," + anchorPt.y + ")\n";
+		
+		str += "hook\n";
+		str += getHooks().size() + " hooks\n";
+		for (Hook h : getHooks()){
+			str += "pt (" + h.getPt().x + "," + h.getPt().y + "\n";
+			str += "name [[" + h.getName() + "]]\n";
+		}
+		
+		str += "bounds\n";
+		str += "pt (" + rect.x + "," + rect.y + ")\n";
+		str += "dim " + rect.width + "w " + rect.height + "h\n";
+		
+		str += "collision_poly\n";
+		str +=  collisionPoly.npoints + " pts\n";
+		for (int i = 0; i < collisionPoly.npoints; i++){
+			str += "pt (" + collisionPoly.xpoints[i] + "," + collisionPoly.ypoints[i] + ")\n";
+		}
+		
+		return str;
 	}
 }
