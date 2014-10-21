@@ -19,10 +19,12 @@ import java.io.PrintWriter;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -45,7 +47,9 @@ public class MainWindow extends JFrame
 	public static final int WINDOW_HEIGHT = 700;
 	public static final int WINDOW_WIDTH = 1000;
 	public static final String DATA_SUFFIX = ".dat";
+	public static final String TITLE_PREFIX = "PTTG Sprite Tool";
 	public static MainWindow MAIN_WINDOW;
+	
 	
 	
 	public ImagePanel imagePanel;
@@ -57,6 +61,7 @@ public class MainWindow extends JFrame
 	private JFileChooser fileChooser = new JFileChooser();
 	private boolean isDirty = false;
 	private String savePath = "";
+	private String dataPath = "";
 	
 	public static void main(String[] args)
 	{
@@ -78,7 +83,7 @@ public class MainWindow extends JFrame
 			MainWindow.MAIN_WINDOW = this;
 		}
 		
-		setTitle("PTTG Sprite Tool");
+		setTitle(TITLE_PREFIX);
 		
 		try{
 			Image img = ImageIO.read(new File("res/board.png"));
@@ -90,7 +95,6 @@ public class MainWindow extends JFrame
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(true);
 		setLocationRelativeTo(null);
-//		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		setLayout(new BorderLayout(5, 5));
@@ -126,6 +130,8 @@ public class MainWindow extends JFrame
 		menu.setMnemonic(KeyEvent.VK_F);
 		
 		JMenuItem newMI = new JMenuItem();
+		
+		// Note: If you select a data file, it will be as if you "Open"ed it.
 		newMI.setAction(new AbstractAction("New") {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -196,6 +202,8 @@ public class MainWindow extends JFrame
 			
 		});
 		menu.add(closeMI);
+//		menu.add(Box.createHorizontalGlue());
+//		menu.add(new JLabel(new ImageIcon("res/save.png")));
 		
 		openMI.setAccelerator(KeyStroke.getKeyStroke("control O"));
 		saveMI.setAccelerator(KeyStroke.getKeyStroke("control S"));
@@ -261,17 +269,37 @@ public class MainWindow extends JFrame
 	}
 	
 	public void openImage(String path, boolean loadData){
+		// This may be a data file rather than an image.
+		if (path.endsWith(DATA_SUFFIX)){
+			// Get image path from data file
+			dataPath = path;
+			loadData = true;
+			try (BufferedReader br = new BufferedReader(new FileReader(path))){
+				path = br.readLine();
+			}
+			catch (IOException e)
+			{
+				System.out.println("Could not read.");
+			}
+		} else {
+			dataPath = path + DATA_SUFFIX;
+		}
 		imagePanel.setSheetPath(path);
 		savePath = path;
 		Tools.setButtonEnabledState(ImageType.SHEET);
 		if (loadData){
-			load(path + DATA_SUFFIX);
+			load(dataPath);
 		}
-		this.isDirty = false;
+		setIsDirty(false);
 	}	
 	
 	public void setIsDirty(boolean b){
 		this.isDirty = b;
+		if (b){
+			setTitle(TITLE_PREFIX + ": *"+ savePath);
+		} else {
+			setTitle(TITLE_PREFIX + ": "+ savePath);
+		}
 	}
 	
 	public void save(boolean useDefault){
@@ -292,6 +320,7 @@ public class MainWindow extends JFrame
 	
 	private void save(String path){
 		try (PrintWriter out = new PrintWriter(path + DATA_SUFFIX)){
+			out.write(path + "\n");
 			for (ImageData iData : getSheetData().getAllImageData()){
 				if (iData.getType().equals(ImageType.IMAGE)){
 					out.write(iData.toString() + "\n");
@@ -304,7 +333,7 @@ public class MainWindow extends JFrame
 			System.out.println("Could not write to file.");
 			e.printStackTrace();
 		}
-		this.isDirty = false;
+		setIsDirty(false);
 	}
 	
 	public void load(String path){
