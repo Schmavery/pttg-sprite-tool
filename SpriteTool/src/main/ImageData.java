@@ -4,9 +4,12 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
+
+import com.sun.org.apache.bcel.internal.generic.LMUL;
 
 public class ImageData
 {
@@ -160,7 +163,6 @@ public class ImageData
 	
 	@Override
 	public String toString(){
-//		return super.toString();
 		String str = "";
 		str += "img\n";
 		
@@ -169,25 +171,116 @@ public class ImageData
 			str += "pt (" + anchorPt.x + "," + anchorPt.y + ")\n";
 		}
 		
-		str += "hook\n";
+		str += "hooks\n";
 		str += getHooks().size() + " hooks\n";
 		for (Hook h : getHooks()){
 			str += "pt (" + h.getPt().x + "," + h.getPt().y + ")\n";
 			str += "name [[" + h.getName() + "]]\n";
 		}
+		str += "endhooks\n";
 		
 		str += "bounds\n";
 		str += "pt (" + rect.x + "," + rect.y + ")\n";
-		str += "dim " + rect.width + "w " + rect.height + "h\n";
+		str += "dim (" + rect.width + "," + rect.height + ")\n";
 		
 		if (collisionPoly != null){
-			str += "collision_poly\n";
-			str +=  collisionPoly.npoints + " pts\n";
+			str += "collision\n";
 			for (int i = 0; i < collisionPoly.npoints; i++){
 				str += "pt (" + collisionPoly.xpoints[i] + "," + collisionPoly.ypoints[i] + ")\n";
 			}
+			str += "endcollision\n";
 		}
+		str += "endimg\n";
 		
 		return str;
+	}
+	
+	private enum ParserState {DEFAULT, ANCHOR, HOOKS, BOUNDS, COLLISION};
+	
+	public void loadData(String data){
+		ParserState state = ParserState.DEFAULT;
+		Hook tmpHook = null;
+		Point pt;
+		
+		String[] lines = data.split("\n");
+		for (int i = 0; i < lines.length; i++){
+			String l = lines[i];
+			switch (state){
+			case ANCHOR:
+				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
+					anchorPt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					state = ParserState.DEFAULT;
+				}
+				break;
+			case HOOKS:
+				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					tmpHook = new Hook("", pt);
+				} else if (l.matches("name \\[\\[.+\\]\\]") && tmpHook != null){
+					String name = l.substring(l.indexOf("[[")+2, l.indexOf("]]"));
+					tmpHook.setName(name);
+					hooks.add(tmpHook);
+				} else if (l.startsWith("endhooks")){
+					state = ParserState.DEFAULT;
+				}
+				break;
+			case BOUNDS:
+				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					rect.setLocation(pt);
+				} else if (l.matches("dim +\\([0-9]+, ?[0-9]+\\)")){
+					// Parse width and height as a point for code reuse ;)
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					rect.setSize(pt.x, pt.y);
+					state = ParserState.DEFAULT;
+				}
+				break;
+			case COLLISION:
+				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					collisionPoly.addPoint(pt.x, pt.y);
+				}
+				break;
+			case DEFAULT:
+				if (l.startsWith("anchor")){
+					state = ParserState.ANCHOR;
+				} else if (l.startsWith("hooks")){
+					state = ParserState.HOOKS;
+					hooks = new LinkedList<>();
+				} else if (l.startsWith("bounds")){
+					state = ParserState.BOUNDS;
+					rect = new Rectangle();
+				} else if (l.startsWith("collision")){
+					state = ParserState.COLLISION;
+					collisionPoly = new Polygon();
+				}
+				break;
+			}
+			
+		}
+	}
+	
+	/**
+	 * Accepts a String of form "(x,y)" and translates it
+	 * a point with corresponding x and y values.  There is
+	 * a reasonable amount of flexibility in the string format.
+	 * The only requirement is that the coords be comma-separated.
+	 * @param str String describing a point.
+	 * @return Point corresponding to the input String.
+	 */
+	private Point parsePoint(String str){
+ 		String xStr = str.substring(0, str.indexOf(","));
+		String yStr = str.substring(str.indexOf(","));
+		
+		// Strip non-numeric chars
+		xStr.replaceAll("[^\\d]", "");
+		yStr.replaceAll("[^\\d]", "");
+		Point pt = null;
+		try {
+			pt = new Point(Integer.parseInt(xStr), Integer.parseInt(yStr));
+		} catch (NumberFormatException e){
+			System.out.println("Invalid point parsed: "+ str);
+		}
+		return pt;
 	}
 }

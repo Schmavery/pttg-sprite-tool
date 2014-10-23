@@ -24,8 +24,4 @@ public class Hook
 	{
 		return pt;
 	}
-//	public void setPt(Point pt)
-//	{
-//		this.pt = pt;
-//	}
 }
