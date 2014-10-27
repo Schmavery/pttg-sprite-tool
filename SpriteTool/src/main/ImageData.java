@@ -165,6 +165,8 @@ public class ImageData
 	public String toString(){
 		String str = "";
 		str += "img\n";
+		str += "pt (" + rect.x + "," + rect.y + ")\n";
+		str += "dim (" + rect.width + "," + rect.height + ")\n";
 		
 		if (anchorPt != null){
 			str += "anchor\n";
@@ -177,11 +179,7 @@ public class ImageData
 			str += "pt (" + h.getPt().x + "," + h.getPt().y + ")\n";
 			str += "name [[" + h.getName() + "]]\n";
 		}
-		str += "endhooks\n";
-		
-		str += "bounds\n";
-		str += "pt (" + rect.x + "," + rect.y + ")\n";
-		str += "dim (" + rect.width + "," + rect.height + ")\n";
+		str += "endhooks\n";	
 		
 		if (collisionPoly != null){
 			str += "collision\n";
@@ -197,14 +195,18 @@ public class ImageData
 	
 	private enum ParserState {DEFAULT, ANCHOR, HOOKS, BOUNDS, COLLISION};
 	
+	/**
+	 * Loads save data into this ImageData object.  This functions endeavours to
+	 * be as flexible as possible when parsing data, but is guaranteed to work for
+	 * the output of this program.
+	 * @param data String describing save data for one ImageData object.
+	 */
 	public void loadData(String data){
 		ParserState state = ParserState.DEFAULT;
 		Hook tmpHook = null;
 		Point pt;
 		
-		String[] lines = data.split("\n");
-		for (int i = 0; i < lines.length; i++){
-			String l = lines[i];
+		for (String l : data.split("\n")){
 			switch (state){
 			case ANCHOR:
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
@@ -247,7 +249,7 @@ public class ImageData
 				} else if (l.startsWith("hooks")){
 					state = ParserState.HOOKS;
 					hooks = new LinkedList<>();
-				} else if (l.startsWith("bounds")){
+				} else if (l.startsWith("img")){
 					state = ParserState.BOUNDS;
 					rect = new Rectangle();
 				} else if (l.startsWith("collision")){
@@ -261,6 +263,28 @@ public class ImageData
 	}
 	
 	/**
+	 * Partially parse the save data to obtain the rect
+	 * defining the subimage.
+	 * @param data String loaded data
+	 * @return Rectangle defining bounds of subimage.
+	 */
+	public static Rectangle parseLoadRect(String data){
+		Rectangle rect = new Rectangle();
+		Point pt;
+		for (String l : data.split("\n")){
+			if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
+				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+				rect.setLocation(pt);
+			} else if (l.matches("dim +\\([0-9]+, ?[0-9]+\\)")){
+				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+				rect.setSize(pt.x, pt.y);
+				break;
+			}
+		}
+		return rect;
+	}
+	
+	/**
 	 * Accepts a String of form "(x,y)" and translates it
 	 * a point with corresponding x and y values.  There is
 	 * a reasonable amount of flexibility in the string format.
@@ -268,7 +292,7 @@ public class ImageData
 	 * @param str String describing a point.
 	 * @return Point corresponding to the input String.
 	 */
-	private Point parsePoint(String str){
+	private static Point parsePoint(String str){
  		String xStr = str.substring(0, str.indexOf(","));
 		String yStr = str.substring(str.indexOf(","));
 		

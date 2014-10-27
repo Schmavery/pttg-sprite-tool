@@ -56,10 +56,11 @@ public class SheetData
 		imgs.clear();
 	}
 	
-	public void newImageData(Rectangle rect, BufferedImage img, JButton button){
+	public ImageData newImageData(Rectangle rect, BufferedImage img, JButton button){
 		ImageData iData = new ImageData(rect, img, this);
 		iData.setButton(button);
 		imgs.add(iData);
+		return iData;
 	}
 	
 	public void removeImageData(Rectangle rect){

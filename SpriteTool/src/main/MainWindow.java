@@ -16,6 +16,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -320,7 +324,7 @@ public class MainWindow extends JFrame
 	
 	private void save(String path){
 		try (PrintWriter out = new PrintWriter(path + DATA_SUFFIX)){
-			out.write(path + "\n");
+			out.write("##" + path + "\n");
 			for (ImageData iData : getSheetData().getAllImageData()){
 				if (iData.getType().equals(ImageType.IMAGE)){
 					out.write(iData.toString() + "\n");
@@ -336,10 +340,32 @@ public class MainWindow extends JFrame
 		setIsDirty(false);
 	}
 	
+	/**
+	 * Attempts to load data from specified path, creates 
+	 * ImageData objects corresponding to the loaded data
+	 * and adds them to the ImagePanel.
+	 * @param path : String - Absolute path to data file.
+	 * @return Path of the image for this data.
+	 */
 	public void load(String path){
-		// Attempt to load data file for image.
-		try (BufferedReader br = new BufferedReader(new FileReader(path))){
-			System.out.println(br.readLine());
+		String loadedPath = savePath;
+		try
+		{
+			List<String> lines = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
+			StringBuilder sb = new StringBuilder();
+			for (String str : lines){
+				if (str.startsWith("##")){
+					loadedPath = str.substring(2);
+				} else if (str.startsWith("img")){
+					sb.setLength(0);
+					sb.append(str+"\n");
+				} else if (str.startsWith("endimg")){
+					String data = sb.toString();
+					getImagePanel().addSnippedImage(ImageData.parseLoadRect(data)).loadData(data);;
+				} else {
+					sb.append(str+"\n");
+				}
+			}
 		}
 		catch (FileNotFoundException e)
 		{
@@ -349,6 +375,7 @@ public class MainWindow extends JFrame
 		{
 			e.printStackTrace();
 		}
+		savePath = loadedPath;
 	}
 
 	public void exit(){

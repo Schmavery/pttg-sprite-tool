@@ -116,13 +116,13 @@ public class ImagePanel extends JPanel
 		getCanvas().refresh();
 	}
 	
-	public void addSnippedImage(Rectangle rect){
+	public ImageData addSnippedImage(Rectangle rect){
 		if (sheetData.hasImage() && rect != null){
 			// Check if this rect overlaps another.
 			for (ImageData iData : sheetData.getAllImageData()){
 				if (iData.getType().equals(ImageType.IMAGE) && iData.getRect().intersects(rect)){
 //					System.out.println("This intersects another rectangle");
-					return;
+					return null;
 				}
 			}
 			
@@ -150,8 +150,8 @@ public class ImagePanel extends JPanel
 				}
 			});
 			
-			sheetData.newImageData(rect, img, button);
-			System.out.println("Cut Image Added");
+			return sheetData.newImageData(rect, img, button);
 		}
+		return null;
 	}
 }
