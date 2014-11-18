@@ -28,6 +28,7 @@ public class AnimTool extends Tool
 	enum AnimActionType {EDIT, RENAME, NEW, DELETE};
 	Animation selectedAnim;
 	JPanel animListPanel;
+	JPanel editPanel;
 	
 	class AnimAction extends AbstractAction {
 		Animation anim;
@@ -80,7 +81,15 @@ public class AnimTool extends Tool
 		JButton newAnimBtn = new JButton(
 				new AnimAction("New Anim", AnimActionType.NEW, new Animation()));
 		newAnimBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		editPanel = new JPanel();
+		JButton moveUpBtn;
+		JButton moveDownBtn;
+		JButton addBtn;
+		JButton removeBtn;
+		
 		oPanel.add(newAnimBtn);
+		oPanel.add(editPanel);
 		oPanel.add(animListPanel);
 	}
 	
@@ -88,7 +97,7 @@ public class AnimTool extends Tool
 	public void selected(){
 		super.selected();
 		selectedAnim = null;
-//		animListPanel.removeAll();
+		animListPanel.removeAll();
 		for (Animation anim : MainWindow.MAIN_WINDOW.getSheetData().getAnimations()){
 			addAnimToPanel(anim);
 		}
@@ -96,7 +105,6 @@ public class AnimTool extends Tool
 	}
 	
 	private void addAnimToPanel(Animation anim){
-		System.out.println("Adding "+anim.getName());
 		JPanel animPanel = new JPanel();
 		animPanel.setName(anim.getName());
 		
