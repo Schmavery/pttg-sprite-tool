@@ -135,10 +135,10 @@ public class PrefPanel extends JPanel
 		
 		JPanel firstPanel = new JPanel(new GridLayout(4, 2));
 		
-		addPrefItem("Sheet Magnification:", "sheet_mag", firstPanel);
-		addPrefItem("Image Magnification:", "image_mag", firstPanel);
-		addPrefItem("AutoSnip Size (px):", "autosnip_size", firstPanel);
-		
+		addPrefBool("Show Tooltips", "show_tips", firstPanel);
+		addPrefItem("Sheet Magnification", "sheet_mag", firstPanel);
+		addPrefItem("Image Magnification", "image_mag", firstPanel);
+		addPrefItem("AutoSnip Size (px)", "autosnip_size", firstPanel);
 		
 		
 		
@@ -149,11 +149,11 @@ public class PrefPanel extends JPanel
 	private void setupCollisionPanel(JPanel panel){
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		JPanel firstPanel = new JPanel(new GridLayout(5, 2));
-		addPrefBool("Autogen Collision box:", "coll_auto", firstPanel);
-		addPrefItem("Default Collision X:", "coll_x", firstPanel);
-		addPrefItem("Default Collision Y:", "coll_y", firstPanel);
-		addPrefItem("Default Collision Height:", "coll_h", firstPanel);
-		addPrefItem("Default Collision Width:", "coll_w", firstPanel);
+		addPrefBool("Autogen Collision box", "coll_auto", firstPanel);
+		addPrefItem("Default Collision X", "coll_x", firstPanel);
+		addPrefItem("Default Collision Y", "coll_y", firstPanel);
+		addPrefItem("Default Collision Height", "coll_h", firstPanel);
+		addPrefItem("Default Collision Width", "coll_w", firstPanel);
 		
 		
 		panel.add(firstPanel);
@@ -162,7 +162,7 @@ public class PrefPanel extends JPanel
 	
 	private void addPrefItem(String title, String key, JPanel container){
 		Dimension d = new Dimension(200, 15);
-		JLabel l = new JLabel(title);
+		JLabel l = new JLabel(title + ":");
 		l.setHorizontalAlignment(JLabel.CENTER);
 		l.setPreferredSize(d);
 		container.add(l);

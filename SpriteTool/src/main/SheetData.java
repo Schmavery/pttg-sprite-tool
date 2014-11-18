@@ -16,6 +16,7 @@ import main.ImageData.ImageType;
 public class SheetData
 {
 	private LinkedList<ImageData> imgs;
+	private LinkedList<Animation> anims;
 	private BufferedImage spriteSheet;
 	private ImageData currImgData = null;
 	
@@ -124,5 +125,9 @@ public class SheetData
 	
 	public LinkedList<ImageData> getAllImageData(){
 		return imgs;
+	}
+	
+	public LinkedList<Animation> getAnimations(){
+		return anims;
 	}
 }

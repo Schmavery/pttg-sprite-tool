@@ -100,7 +100,6 @@ public abstract class Tool
 	
 	public void setButton(JButton button){
 		if (button != null){
-//			button.setBackground(Color.WHITE);
 			if (toolButton == null || !toolButton.equals(button)){
 				toolButton = button;
 			}

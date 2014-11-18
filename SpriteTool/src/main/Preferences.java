@@ -58,6 +58,7 @@ public class Preferences implements Cloneable
 		set("coll_y", "6");
 		set("coll_w", "8");
 		set("coll_h", "8");
+		set("show_tips", "true");
 	}
 	
 	public void savePrefChanges() {

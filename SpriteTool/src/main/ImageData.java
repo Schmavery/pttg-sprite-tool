@@ -5,6 +5,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JButton;
 
@@ -13,6 +14,7 @@ public class ImageData
 	public static enum ImageType {SHEET, IMAGE, EITHER};
 	private static final int MAX_MAG = 50;
 	private static final int DEFAULT_SCALE = 1;
+	private static int CURR_ID;
 	
 	private LinkedList<Hook> hooks;
 	private Rectangle rect;
@@ -22,6 +24,7 @@ public class ImageData
 	private BufferedImage img;
 	private float scale;
 	private Point anchorPt;
+	private int id;
 	
 	private JButton button;
 
@@ -39,14 +42,21 @@ public class ImageData
 	
 	public ImageData(Rectangle rect, BufferedImage img, SheetData owner){
 		this.img = img;
-//		this.owner = owner;
 		this.rect = rect;
 		this.hooks = new LinkedList<>();
 		this.type = ImageType.IMAGE;
-		if (img != null){
-			System.out.println("Img height: "+this.img.getHeight());
-		}
+		id = CURR_ID++;
 		resetScale();
+	}
+	
+	public static void resetId(List<ImageData> iDatas){
+		int max = 0;
+		for (ImageData iData : iDatas){
+			if (iData.id > max){
+				max = iData.id;
+			}
+		}
+		CURR_ID = max + 1;
 	}
 	
 	public void setImageType(ImageType type){
@@ -122,6 +132,10 @@ public class ImageData
 		return img.getHeight();
 	}
 	
+	public int getId(){
+		return id;
+	}
+	
 	public void setButton(JButton button){
 		this.button = button;
 	}
@@ -161,7 +175,7 @@ public class ImageData
 	@Override
 	public String toString(){
 		String str = "";
-		str += "img\n";
+		str += "img " + id + "\n";
 		str += "pt (" + rect.x + "," + rect.y + ")\n";
 		str += "dim (" + rect.width + "," + rect.height + ")\n";
 		
@@ -252,6 +266,11 @@ public class ImageData
 				} else if (l.startsWith("collision")){
 					state = ParserState.COLLISION;
 					collisionPoly = new Polygon();
+				} else if (l.startsWith("img ")){
+					String idStr = l.substring(4);
+					if (idStr.matches("\\d+")){
+						this.id = Integer.valueOf(idStr);
+					}
 				}
 				break;
 			}

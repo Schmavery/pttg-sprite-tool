@@ -29,6 +29,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.ToolTipManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -45,6 +46,7 @@ public class MainWindow extends JFrame
 	private static final long serialVersionUID = 1L;
 	public static final int WINDOW_HEIGHT = 700;
 	public static final int WINDOW_WIDTH = 1000;
+	public static final int TIP_DELAY = 500;
 	public static final String DATA_SUFFIX = ".dat";
 	public static final String TITLE_PREFIX = "PTTG Sprite Tool";
 	public static MainWindow MAIN_WINDOW;
@@ -113,6 +115,10 @@ public class MainWindow extends JFrame
 		add(toolbarShell, BorderLayout.EAST);
 		add(menuBar, BorderLayout.NORTH);
 		add(imagePanel, BorderLayout.CENTER);
+		
+		ToolTipManager.sharedInstance().setEnabled(Boolean.valueOf(Preferences.PREFS.get("show_tips")));
+		ToolTipManager.sharedInstance().setInitialDelay(TIP_DELAY);
+		ToolTipManager.sharedInstance().setReshowDelay(0);
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -247,6 +253,7 @@ public class MainWindow extends JFrame
 		button.setFocusPainted(false);
 		button.setPreferredSize(new Dimension(40, 40));
 		button.setMargin(new Insets(0,0,0,0));
+		button.setToolTipText(tool.getName());
 		toolbar.add(button);
 	}
 	
@@ -355,8 +362,6 @@ public class MainWindow extends JFrame
 			String str = br.readLine();
 			
 			while (str != null){
-//				if (str.startsWith("##")){
-//					loadedPath = str.substring(2);
 				if (str.startsWith("img")){
 					sb.setLength(0);
 					sb.append(str+"\n");
@@ -368,6 +373,7 @@ public class MainWindow extends JFrame
 				}
 				str = br.readLine();
 			}
+			ImageData.resetId(getSheetData().getAllImageData());
 		}
 		catch (FileNotFoundException e)
 		{
