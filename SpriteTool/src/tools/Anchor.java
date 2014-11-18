@@ -14,9 +14,8 @@ public class Anchor extends Tool
 	public Anchor()
 	{
 		super("Anchor", "res/anchor.png", ImageType.IMAGE);
-		JPanel oPanel = new JPanel();
+		JPanel oPanel = getOptionsInnerPanel();
 		oPanel.add(new JLabel("Anchor"));
-		setOptionInnerPanel(oPanel);
 	}
 
 	@Override

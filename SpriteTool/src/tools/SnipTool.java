@@ -36,7 +36,7 @@ public class SnipTool extends Tool
 	public SnipTool(){
 		super("Snip Tool", "res/scissors.png", ImageType.SHEET);
 		
-		JPanel oPanel = new JPanel();
+		JPanel oPanel = getOptionsInnerPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
 		autoSnip = new JCheckBox("Autosnip");
 		
@@ -73,7 +73,6 @@ public class SnipTool extends Tool
 		oPanel.add(Box.createVerticalStrut(5));
 		oPanel.add(Box.createVerticalGlue());
 		oPanel.add(deleteButton);
-		setOptionInnerPanel(oPanel);
 	}
 	
 	@Override

@@ -33,9 +33,8 @@ public class BoxTool extends Tool
 	{
 		super("Collision Box Tool", "res/lasso.png", ImageType.IMAGE);
 		pts = new LinkedList<>();
-		JPanel oPanel = new JPanel();
+		JPanel oPanel = getOptionsInnerPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
-//		oPanel.add(new JLabel(getName()));
 		boxMode = new JCheckBox("Box Mode");
 		boxMode.setSelected(true);
 		boxMode.addActionListener(new ActionListener(){
@@ -45,8 +44,6 @@ public class BoxTool extends Tool
 			}
 		});
 		oPanel.add(boxMode);
-		
-		setOptionInnerPanel(oPanel);
 	}
 	
 	@Override

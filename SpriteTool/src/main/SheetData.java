@@ -34,6 +34,7 @@ public class SheetData
 	
 	public void setSheetPath(String path, JButton button){
 		imgs = new LinkedList<>();
+		anims = new LinkedList<>();
 		if (path != null){
 			try
 			{

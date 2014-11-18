@@ -28,7 +28,7 @@ public class HookTool extends Tool
 	public HookTool(){
 		super("Hook Tool", "res/pencil.png", ImageType.IMAGE);
 		
-		JPanel oPanel = new JPanel();
+		JPanel oPanel = getOptionsInnerPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
 
 		ActionListener acceptListener = new ActionListener(){
@@ -45,7 +45,6 @@ public class HookTool extends Tool
 
 		oPanel.add(text);
 		oPanel.add(accept);
-		setOptionInnerPanel(oPanel);
 	}
 	
 	private void updateName(){

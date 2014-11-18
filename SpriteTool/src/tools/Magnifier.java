@@ -21,7 +21,7 @@ public class Magnifier extends Tool
 	public Magnifier(){
 		super("Magnifier", "res/mag.png", ImageType.EITHER);
 		
-		JPanel oPanel = new JPanel();
+		JPanel oPanel = getOptionsInnerPanel();
 		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
 		oPanel.add(new JLabel("Magnification:"));
 		magAmt = new JTextField();
@@ -43,7 +43,6 @@ public class Magnifier extends Tool
 		});
 		
 		oPanel.add(magAmt);
-		setOptionInnerPanel(oPanel);
 	}
 	
 	@Override

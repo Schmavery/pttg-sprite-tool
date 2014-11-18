@@ -26,6 +26,7 @@ public abstract class Tool
 	public Tool(String name, String path, ImageType worksOn){
 		toolName = name;
 		this.worksOn = worksOn;
+		optionsInnerPanel = new JPanel();
 		try
 		{
 			img = ImageIO.read(new File(path));
@@ -40,12 +41,11 @@ public abstract class Tool
 		return img;
 	}
 	
-	public void setOptionInnerPanel(JPanel optionsPanel){
-		this.optionsInnerPanel = optionsPanel;
-	}
+//	public void setOptionInnerPanel(JPanel optionsPanel){
+//		this.optionsInnerPanel = optionsPanel;
+//	}
 	
 	public JPanel getOptionsInnerPanel(){
-		resetOptionsInnerPanel();
 		return optionsInnerPanel;
 	}
 	

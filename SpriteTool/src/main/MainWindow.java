@@ -228,7 +228,7 @@ public class MainWindow extends JFrame
 //		toolbar.add(new JButton("A"));
 		
 		optionsPanel = new OptionsPanel();
-		Dimension d = new Dimension(150, 150);
+		Dimension d = new Dimension(160, 150);
 		optionsPanel.setPreferredSize(d);
 		optionsPanel.setBorder(new TitledBorder("Options"));
 		toolbarShell.add(optionsPanel, BorderLayout.CENTER);
