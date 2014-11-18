@@ -54,10 +54,10 @@ public class Preferences implements Cloneable
 		set("image_mag", "30");
 		set("autosnip_size", "16");
 		set("coll_auto", "true");
-		set("coll_x", "0");
-		set("coll_y", "0");
-		set("coll_w", "16");
-		set("coll_h", "16");
+		set("coll_x", "4");
+		set("coll_y", "6");
+		set("coll_w", "8");
+		set("coll_h", "8");
 	}
 	
 	public void savePrefChanges() {

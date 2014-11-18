@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.ImageData.ImageType;
 import panels.ImagePanel;
@@ -267,17 +268,21 @@ public class MainWindow extends JFrame
 	public void openImage(String path, boolean loadData){
 		// This may be a data file rather than an image.
 		if (path.endsWith(DATA_SUFFIX)){
-			// Get image path from data file
 			dataPath = path;
 			loadData = true;
+
+			// Get image path from data file
 			try (BufferedReader br = new BufferedReader(new FileReader(path))){
-				path = br.readLine();
+				String read = br.readLine();
+				if (read.startsWith("##")){
+					path = read.substring(2);
+				}
 			}
 			catch (IOException e)
 			{
 				System.out.println("Could not read.");
 			}
-		} else {
+		} else if (loadData){
 			dataPath = path + DATA_SUFFIX;
 		}
 		imagePanel.setSheetPath(path);
@@ -301,11 +306,12 @@ public class MainWindow extends JFrame
 	public void save(boolean useDefault){
 		System.out.println("Attempting save");
 		// if save is successful
-		if (useDefault && savePath != null && !savePath.isEmpty()){
-			save(savePath);
+		if (useDefault && dataPath != null && !dataPath.isEmpty()){
+			save(dataPath);
 		} else {
 			// Display save dialog.
 			JFileChooser fc = new JFileChooser();
+			fc.setFileFilter(new FileNameExtensionFilter("Data file (*.dat)", "dat"));
 			fc.showSaveDialog(MainWindow.MAIN_WINDOW);
 			File file = fc.getSelectedFile();
 			if (file != null){
@@ -315,8 +321,9 @@ public class MainWindow extends JFrame
 	}
 	
 	private void save(String path){
-		try (PrintWriter out = new PrintWriter(path + DATA_SUFFIX)){
-			out.write("##" + path + "\n");
+		dataPath = path + (path.endsWith(DATA_SUFFIX) ? "" : DATA_SUFFIX);
+		try (PrintWriter out = new PrintWriter(dataPath)){
+			out.write("##" + savePath + "\n");
 			for (ImageData iData : getSheetData().getAllImageData()){
 				if (iData.getType().equals(ImageType.IMAGE)){
 					out.write(iData.toString() + "\n");
@@ -340,16 +347,16 @@ public class MainWindow extends JFrame
 	 * @return Path of the image for this data.
 	 */
 	public void load(String path){
-		String loadedPath = savePath;
+//		String loadedPath = savePath;
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path))))
 		{
 			StringBuilder sb = new StringBuilder();
 			String str = br.readLine();
 			
 			while (str != null){
-				if (str.startsWith("##")){
-					loadedPath = str.substring(2);
-				} else if (str.startsWith("img")){
+//				if (str.startsWith("##")){
+//					loadedPath = str.substring(2);
+				if (str.startsWith("img")){
 					sb.setLength(0);
 					sb.append(str+"\n");
 				} else if (str.startsWith("endimg")){
@@ -369,7 +376,7 @@ public class MainWindow extends JFrame
 		{
 			e.printStackTrace();
 		}
-		savePath = loadedPath;
+//		savePath = loadedPath;
 	}
 
 	public void exit(){

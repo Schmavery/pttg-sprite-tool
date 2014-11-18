@@ -31,6 +31,7 @@ public class SnipTool extends Tool
 	private Rectangle rect;
 	
 	private JButton deleteButton;
+	private JButton deleteAllButton;
 	
 	public SnipTool(){
 		super("Snip Tool", "res/scissors.png", ImageType.SHEET);
@@ -51,7 +52,25 @@ public class SnipTool extends Tool
 			}
 		});
 
+		deleteAllButton = new JButton("Delete All?");
+		deleteAllButton.setBackground(Color.RED);
+		deleteAllButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				MainWindow.MAIN_WINDOW.getSheetData().removeAllSnipped();
+				SnipTool.this.selected();
+			}
+		});
+		
 		oPanel.add(autoSnip);
+		oPanel.add(Box.createVerticalGlue());
+		oPanel.add(Box.createVerticalStrut(5));
+		oPanel.add(Box.createVerticalGlue());
+		oPanel.add(deleteAllButton);
+		oPanel.add(Box.createVerticalGlue());
+		oPanel.add(Box.createVerticalStrut(5));
 		oPanel.add(Box.createVerticalGlue());
 		oPanel.add(deleteButton);
 		setOptionInnerPanel(oPanel);

@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -54,6 +55,18 @@ public class SheetData
 				removeImageData(iData.getRect(), false);
 		}
 		imgs.clear();
+	}
+	
+	public void removeAllSnipped(){
+		Iterator<ImageData> iter = imgs.iterator();
+		ImageData iData;
+		while (iter.hasNext()){
+			iData = iter.next();
+			if (iData.getRect() != null){
+				removeImageData(iData.getRect(), false);
+				iter.remove();
+			}
+		}
 	}
 	
 	public ImageData newImageData(Rectangle rect, BufferedImage img, JButton button){
