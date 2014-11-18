@@ -60,9 +60,6 @@ public class BoxTool extends Tool
 	@Override
 	public void onClick(MouseEvent event, int x, int y)
 	{
-//		MainWindow mw = MainWindow.MAIN_WINDOW;
-//		ImageData iData = mw.getSheetData().getCurrentImageData();
-		
 		switch(state){
 		case START:
 			if (boxMode.isSelected()){

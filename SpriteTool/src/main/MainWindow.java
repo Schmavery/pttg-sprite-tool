@@ -16,19 +16,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -206,8 +200,6 @@ public class MainWindow extends JFrame
 			
 		});
 		menu.add(closeMI);
-//		menu.add(Box.createHorizontalGlue());
-//		menu.add(new JLabel(new ImageIcon("res/save.png")));
 		
 		openMI.setAccelerator(KeyStroke.getKeyStroke("control O"));
 		saveMI.setAccelerator(KeyStroke.getKeyStroke("control S"));
@@ -349,11 +341,12 @@ public class MainWindow extends JFrame
 	 */
 	public void load(String path){
 		String loadedPath = savePath;
-		try
+		try (BufferedReader br = new BufferedReader(new FileReader(new File(path))))
 		{
-			List<String> lines = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
 			StringBuilder sb = new StringBuilder();
-			for (String str : lines){
+			String str = br.readLine();
+			
+			while (str != null){
 				if (str.startsWith("##")){
 					loadedPath = str.substring(2);
 				} else if (str.startsWith("img")){
@@ -365,6 +358,7 @@ public class MainWindow extends JFrame
 				} else {
 					sb.append(str+"\n");
 				}
+				str = br.readLine();
 			}
 		}
 		catch (FileNotFoundException e)
@@ -379,6 +373,7 @@ public class MainWindow extends JFrame
 	}
 
 	public void exit(){
+		System.out.println("Exiting");
 		if (isDirty){
 			// Prompt for save first
 			int result = JOptionPane.showConfirmDialog(this, 

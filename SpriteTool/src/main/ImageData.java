@@ -4,12 +4,9 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
-
-import com.sun.org.apache.bcel.internal.generic.LMUL;
 
 public class ImageData
 {
@@ -210,13 +207,13 @@ public class ImageData
 			switch (state){
 			case ANCHOR:
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
-					anchorPt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					anchorPt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					state = ParserState.DEFAULT;
 				}
 				break;
 			case HOOKS:
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
-					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					tmpHook = new Hook("", pt);
 				} else if (l.matches("name \\[\\[.+\\]\\]") && tmpHook != null){
 					String name = l.substring(l.indexOf("[[")+2, l.indexOf("]]"));
@@ -228,18 +225,18 @@ public class ImageData
 				break;
 			case BOUNDS:
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
-					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					rect.setLocation(pt);
 				} else if (l.matches("dim +\\([0-9]+, ?[0-9]+\\)")){
 					// Parse width and height as a point for code reuse ;)
-					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					rect.setSize(pt.x, pt.y);
 					state = ParserState.DEFAULT;
 				}
 				break;
 			case COLLISION:
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
-					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					collisionPoly.addPoint(pt.x, pt.y);
 				}
 				break;
@@ -273,10 +270,10 @@ public class ImageData
 		Point pt;
 		for (String l : data.split("\n")){
 			if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
-				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 				rect.setLocation(pt);
 			} else if (l.matches("dim +\\([0-9]+, ?[0-9]+\\)")){
-				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf("")+1));
+				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 				rect.setSize(pt.x, pt.y);
 				break;
 			}
@@ -295,10 +292,9 @@ public class ImageData
 	private static Point parsePoint(String str){
  		String xStr = str.substring(0, str.indexOf(","));
 		String yStr = str.substring(str.indexOf(","));
-		
 		// Strip non-numeric chars
-		xStr.replaceAll("[^\\d]", "");
-		yStr.replaceAll("[^\\d]", "");
+		xStr = xStr.replaceAll("[^\\d]", "");
+		yStr = yStr.replaceAll("[^\\d]", "");
 		Point pt = null;
 		try {
 			pt = new Point(Integer.parseInt(xStr), Integer.parseInt(yStr));

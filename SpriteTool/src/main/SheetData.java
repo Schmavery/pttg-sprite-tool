@@ -51,7 +51,7 @@ public class SheetData
 	public void reset(){
 		for (ImageData iData : imgs){
 			if (iData.getRect() != null)
-				removeImageData(iData.getRect());
+				removeImageData(iData.getRect(), false);
 		}
 		imgs.clear();
 	}
@@ -63,7 +63,7 @@ public class SheetData
 		return iData;
 	}
 	
-	public void removeImageData(Rectangle rect){
+	public void removeImageData(Rectangle rect, boolean autoRemove){
 		ImageData match = null;
 		for (ImageData iData : imgs){
 			if (rect.equals(iData.getRect())){
@@ -76,9 +76,9 @@ public class SheetData
 				break;
 			}
 		}
-		if (match != null){
+		if (match != null && autoRemove){
 			imgs.remove(match);
-		} else {
+		} else if (match == null){
 			System.out.println("Could not find image");
 		}
 	}

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +22,7 @@ import main.Canvas;
 import main.ImageData;
 import main.MainWindow;
 import main.ImageData.ImageType;
+import main.Preferences;
 import main.SheetData;
 import tools.Tools;
 
@@ -117,6 +119,8 @@ public class ImagePanel extends JPanel
 	}
 	
 	public ImageData addSnippedImage(Rectangle rect){
+		boolean autoColl = Boolean.parseBoolean(Preferences.PREFS.get("coll_auto"));
+		
 		if (sheetData.hasImage() && rect != null){
 			// Check if this rect overlaps another.
 			for (ImageData iData : sheetData.getAllImageData()){
@@ -150,7 +154,24 @@ public class ImagePanel extends JPanel
 				}
 			});
 			
-			return sheetData.newImageData(rect, img, button);
+			ImageData iData = sheetData.newImageData(rect, img, button);
+			if (autoColl){
+				// Autogenerate and add a collision box
+				int collX = Integer.valueOf(Preferences.PREFS.get("coll_x"));
+				int collY = Integer.valueOf(Preferences.PREFS.get("coll_y"));
+				int collW = Integer.valueOf(Preferences.PREFS.get("coll_w"));
+				int collH = Integer.valueOf(Preferences.PREFS.get("coll_h"));
+				
+				Polygon p = new Polygon();
+				// Wrapping the box clockwise
+				p.addPoint(collX, collY);
+				p.addPoint(collX + collW, collY);
+				p.addPoint(collX + collW, collY + collH);
+				p.addPoint(collX, collY + collH);
+				
+				iData.setPoly(p);
+			}
+			return iData;
 		}
 		return null;
 	}

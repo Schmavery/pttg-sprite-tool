@@ -5,24 +5,26 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 import main.Preferences;
 
-public class PrefPanel extends JPanel implements ActionListener
+public class PrefPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 	private static final String PROP_KEY = "prefname";
@@ -43,14 +45,27 @@ public class PrefPanel extends JPanel implements ActionListener
 		private void handleDocumentEvent(DocumentEvent e){
 			try
 			{
-				System.out.println("prefname: "+ (String) e.getDocument().getProperty(PROP_KEY));
-				System.out.println("text: " + e.getDocument().getText(0, e.getDocument().getLength()));
+				System.out.println("prefname: "+ (String) e.getDocument().getProperty(PROP_KEY) + ": "
+						+ e.getDocument().getText(0, e.getDocument().getLength()));
+				
 				PrefPanel.this.tmpPrefs.set((String) e.getDocument().getProperty(PROP_KEY), 
 						e.getDocument().getText(0, e.getDocument().getLength()));
 			}
 			catch (BadLocationException e1)
 			{
 				e1.printStackTrace();
+			}
+		}
+	};
+	
+	private ChangeListener changeListener = new ChangeListener()
+	{
+		@Override
+		public void stateChanged(ChangeEvent e)
+		{
+			if (e.getSource() instanceof JCheckBox){
+				JCheckBox src = (JCheckBox) e.getSource();
+				PrefPanel.this.tmpPrefs.set(src.getName(), Boolean.toString(src.isSelected()));
 			}
 		}
 	};
@@ -69,8 +84,11 @@ public class PrefPanel extends JPanel implements ActionListener
 		tabPane.setTabPlacement(JTabbedPane.LEFT);
 		
 		JPanel genPanel = new JPanel();
+		JPanel collPanel = new JPanel();
 		tabPane.addTab("General", genPanel);
 		setupGeneralPanel(genPanel);
+		tabPane.addTab("Collision", collPanel);
+		setupCollisionPanel(collPanel);
 		
 		JPanel acceptPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		setupAcceptPanel(acceptPanel);
@@ -87,7 +105,7 @@ public class PrefPanel extends JPanel implements ActionListener
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent arg0)
+			public void actionPerformed(ActionEvent e)
 			{
 				// Save things first
 				Preferences.PREFS = tmpPrefs;
@@ -111,74 +129,61 @@ public class PrefPanel extends JPanel implements ActionListener
 		acceptPanel.add(cancelButton);
 	}
 	
-	private void setupGeneralPanel(JPanel genPanel){
+	private void setupGeneralPanel(JPanel panel){
 		
-		genPanel.setLayout(new BoxLayout(genPanel, BoxLayout.Y_AXIS));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		JPanel firstPanel = new JPanel(new GridLayout(4, 2));
-		
-//		JLabel l;
-//		JTextField txt;
 		
 		addPrefItem("Sheet Magnification:", "sheet_mag", firstPanel);
 		addPrefItem("Image Magnification:", "image_mag", firstPanel);
 		addPrefItem("AutoSnip Size (px):", "autosnip_size", firstPanel);
 		
-//		l = new JLabel("Sheet Magnification:");
-//		l.setHorizontalAlignment(JLabel.CENTER);
-//		firstPanel.add(l);
-//		txt = new JTextField(tmpPrefs.get("defaultmag"));
-//		txt.setPreferredSize(d);
-//		txt.addActionListener(this);
-//		txt.getDocument().putProperty(PROP_KEY, "defaultmag");
-//		txt.getDocument().addDocumentListener(docListener);
-//		firstPanel.add(txt);
-//		
-//		l = new JLabel("Image Magnification:");
-//		l.setHorizontalAlignment(JLabel.CENTER);
-//		firstPanel.add(l);
-//		firstPanel.add(new JTextField("Default..."));
-////		txt = new JTextField(tmpPrefs.get("defaultmag"));
-//		txt.setPreferredSize(d);
-//		txt.addActionListener(this);
-//		txt.getDocument().putProperty(PROP_KEY, "defaultmag");
-//		txt.getDocument().addDocumentListener(docListener);
-//		firstPanel.add(txt);
-//		
-//		l = new JLabel("AutoSnip Size (px):");
-//		l.setHorizontalAlignment(JLabel.CENTER);
-//		firstPanel.add(l);
-////		firstPanel.add(new JTextField("Default..."));
-//		txt = new JTextField(tmpPrefs.get("defaultmag"));
-//		txt.setPreferredSize(d);
-//		txt.addActionListener(this);
-//		txt.getDocument().putProperty(PROP_KEY, "defaultmag");
-//		txt.getDocument().addDocumentListener(docListener);
-//		firstPanel.add(txt);
 		
 		
-		genPanel.add(firstPanel);
-		genPanel.add(Box.createVerticalGlue());
+		
+		panel.add(firstPanel);
+		panel.add(Box.createVerticalGlue());
 	}
 	
-	private void addPrefItem(String label, String key, JPanel container){
-		Dimension d = new Dimension(200, 20);
-		JLabel l = new JLabel(label);
+	private void setupCollisionPanel(JPanel panel){
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		JPanel firstPanel = new JPanel(new GridLayout(5, 2));
+		addPrefBool("Autogen Collision box:", "coll_auto", firstPanel);
+		addPrefItem("Default Collision X:", "coll_x", firstPanel);
+		addPrefItem("Default Collision Y:", "coll_y", firstPanel);
+		addPrefItem("Default Collision Height:", "coll_h", firstPanel);
+		addPrefItem("Default Collision Width:", "coll_w", firstPanel);
+		
+		
+		panel.add(firstPanel);
+		panel.add(Box.createVerticalGlue());
+	}
+	
+	private void addPrefItem(String title, String key, JPanel container){
+		Dimension d = new Dimension(200, 15);
+		JLabel l = new JLabel(title);
 		l.setHorizontalAlignment(JLabel.CENTER);
+		l.setPreferredSize(d);
 		container.add(l);
 		
 		JTextField txt = new JTextField(tmpPrefs.get(key));
 		txt.setPreferredSize(d);
-		txt.addActionListener(this);
+		txt.setName(key);
 		txt.getDocument().putProperty(PROP_KEY, key);
 		txt.getDocument().addDocumentListener(docListener);
 		container.add(txt);
 	}
+	
+	private void addPrefBool(String title, String key, JPanel container){
+		Dimension d = new Dimension(200, 15);
+		JCheckBox chk = new JCheckBox(title, Boolean.parseBoolean(tmpPrefs.get(key)));
+		chk.setPreferredSize(d);
+		chk.setName(key);
 
-	@Override
-	public void actionPerformed(ActionEvent event)
-	{
-		System.out.println(event.paramString());
+		chk.addChangeListener(changeListener);
+		container.add(chk);
+		container.add(Box.createHorizontalGlue());
 	}
 
 }

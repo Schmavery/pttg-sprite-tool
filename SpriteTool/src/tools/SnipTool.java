@@ -46,7 +46,7 @@ public class SnipTool extends Tool
 			@Override
 			public void actionPerformed(ActionEvent event)
 			{
-				MainWindow.MAIN_WINDOW.getSheetData().removeImageData(rect);
+				MainWindow.MAIN_WINDOW.getSheetData().removeImageData(rect, true);
 				SnipTool.this.selected();
 			}
 		});
