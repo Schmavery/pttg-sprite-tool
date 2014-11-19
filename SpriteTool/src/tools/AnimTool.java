@@ -3,6 +3,7 @@ package tools;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -42,6 +43,7 @@ public class AnimTool extends Tool
 	ImageData selectedFrame;
 	JPanel animListPanel;
 	JPanel editPanel;
+	Container selectedAnimPanel;
 	
 	class AnimAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
@@ -60,24 +62,22 @@ public class AnimTool extends Tool
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			System.out.println("Action performed " + type.toString());
 			editPanel.setVisible(false);
 			selectedAnim = null;
 			selectedFrame = null;
 			switch (this.type){
 			case DELETE:
-				//TODO: Removey stuff? Reset?
 				AnimTool.this.animListPanel.remove((Component) ((JButton) event.getSource()).getParent());
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().remove(anim);
 				break;
 			case SELECT:
-				selectedAnim = anim;
+				selectAnimation(((Component)event.getSource()).getParent(), anim);
 				break;
 			case NEW:
 				Animation anim = new Animation();
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().add(anim);
-				addAnimToPanel(anim);
-				selectedAnim = anim;
+				JPanel added =addAnimToPanel(anim);
+				selectAnimation(added, anim);
 				break;
 			case RENAME:
 				this.anim.setName(((JTextField) event.getSource()).getText());
@@ -177,7 +177,7 @@ public class AnimTool extends Tool
 		resetOptionsInnerPanel();
 	}
 	
-	private void addAnimToPanel(Animation anim){
+	private JPanel addAnimToPanel(Animation anim){
 		JPanel animPanel = new JPanel();
 		animPanel.setName(anim.getName());
 		animPanel.setBackground(Color.BLUE);
@@ -198,6 +198,7 @@ public class AnimTool extends Tool
 		animPanel.add(delBtn);
 		animListPanel.add(animPanel);
 		resetOptionsInnerPanel();
+		return animPanel;
 	}
 	
 	@Override
@@ -238,8 +239,13 @@ public class AnimTool extends Tool
 		}
 	}
 	
-	private void selectAnimation(Component c){
-//		c.
+	private void selectAnimation(Container parent, Animation anim){
+		if (selectedAnimPanel != null){
+			selectedAnimPanel.setBackground(DEFAULT_COLOR);
+		}
+		selectedAnimPanel = parent;
+		selectedAnimPanel.setBackground(Color.DARK_GRAY);
+		selectedAnim = anim;
 	}
 
 }
