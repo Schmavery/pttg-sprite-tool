@@ -41,15 +41,16 @@ public abstract class Tool
 		return img;
 	}
 	
-//	public void setOptionInnerPanel(JPanel optionsPanel){
-//		this.optionsInnerPanel = optionsPanel;
-//	}
-	
 	public JPanel getOptionsInnerPanel(){
 		return optionsInnerPanel;
 	}
 	
+	/**
+	 * Override to implement behaviour when the inner panel should be reset.
+	 */
 	public void resetOptionsInnerPanel(){
+		optionsInnerPanel.revalidate();
+		optionsInnerPanel.repaint();
 	}
 	
 	public void selected(){
@@ -88,8 +89,11 @@ public abstract class Tool
 		}
 	}
 	
+	/**
+	 * Override to implement behaviour when canvas mouse events are received.
+	 */
 	public void drawTool(Graphics g, int mouseX, int mouseY){
-		
+		// To be optionally overridden in subclasses
 	}
 	
 	/**
@@ -113,7 +117,6 @@ public abstract class Tool
 	}
 	
 	public static String formatFloat(float f){
-//		return String.valueOf(f);
 		if(f == (int) f)
 	        return String.format("%d",(int)f);
 	    else

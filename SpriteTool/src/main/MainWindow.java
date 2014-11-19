@@ -215,7 +215,7 @@ public class MainWindow extends JFrame
 	private void setupToolbar(JPanel toolbarShell){
 		toolbarShell.setLayout(new BorderLayout());
 		
-		JPanel toolbar = new JPanel(new GridLayout(6, 1, 3, 3));
+		JPanel toolbar = new JPanel(new GridLayout(2, 3, 3, 3));
 		toolbar.setBorder(new TitledBorder("Toolbar"));
 		
 		createToolbarButton(Tools.getMagnifier(), toolbar);
@@ -228,9 +228,7 @@ public class MainWindow extends JFrame
 //		toolbar.add(new JButton("A"));
 		
 		optionsPanel = new OptionsPanel();
-		Dimension d = new Dimension(160, 150);
-		optionsPanel.setPreferredSize(d);
-		optionsPanel.setBorder(new TitledBorder("Options"));
+		
 		toolbarShell.add(optionsPanel, BorderLayout.CENTER);
 		toolbarShell.add(toolbar, BorderLayout.NORTH);		
 	}

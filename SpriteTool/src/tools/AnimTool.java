@@ -1,5 +1,6 @@
 package tools;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,7 +17,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
 import main.Animation;
@@ -33,6 +36,8 @@ import main.MainWindow;
 public class AnimTool extends Tool
 {
 	enum AnimActionType {SELECT, RENAME, NEW, DELETE};
+	private static JPanel colorPanel = new JPanel();
+	public static final Color DEFAULT_COLOR = colorPanel.getBackground(); 
 	Animation selectedAnim;
 	ImageData selectedFrame;
 	JPanel animListPanel;
@@ -72,6 +77,7 @@ public class AnimTool extends Tool
 				Animation anim = new Animation();
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().add(anim);
 				addAnimToPanel(anim);
+				selectedAnim = anim;
 				break;
 			case RENAME:
 				this.anim.setName(((JTextField) event.getSource()).getText());
@@ -115,27 +121,39 @@ public class AnimTool extends Tool
 		super("Animation Tool", "res/board.png", ImageType.SHEET);
 		
 		JPanel oPanel = getOptionsInnerPanel();
-		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
+		oPanel.setLayout(new BorderLayout());
+		
+		JScrollPane animListScrollPane = new JScrollPane();
+		animListScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		animListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		animListScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0,0));
+		JPanel animListWrapper = new JPanel(new BorderLayout());
 		animListPanel = new JPanel();
+		animListPanel.setBackground(Color.RED);
 		animListPanel.setLayout(new BoxLayout(animListPanel, BoxLayout.Y_AXIS));
-		JButton newAnimBtn = new JButton(
-				new AnimAction("New Anim", AnimActionType.NEW, new Animation()));
+		animListWrapper.add(animListPanel, BorderLayout.NORTH);
+		animListScrollPane.getViewport().add(animListWrapper);
+		
+		JButton newAnimBtn = new JButton(new AnimAction("New Anim", AnimActionType.NEW, null));
 		newAnimBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		editPanel = new JPanel();
 		editPanel.setBorder(new TitledBorder("Frame:"));
-		editPanel.setVisible(false);
 		
 		addFrameEditButton(editPanel, "ADD", "\u271A");
 		addFrameEditButton(editPanel, "REMOVE", "\u2718");
 		addFrameEditButton(editPanel, "UP", "\u2191");
 		addFrameEditButton(editPanel, "DOWN", "\u2193");
 
+		JPanel upperPanel = new JPanel();
+		upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.Y_AXIS));
 		
-		oPanel.add(newAnimBtn);
-		oPanel.add(Box.createVerticalStrut(5));
-		oPanel.add(editPanel);
-		oPanel.add(animListPanel);
+		upperPanel.add(newAnimBtn);
+		upperPanel.add(editPanel);
+		upperPanel.add(Box.createVerticalStrut(10));
+		
+		oPanel.add(upperPanel, BorderLayout.NORTH);
+		oPanel.add(animListScrollPane, BorderLayout.CENTER);
 	}
 	
 	public void addFrameEditButton(JPanel container, String name, String title){
@@ -156,13 +174,14 @@ public class AnimTool extends Tool
 		for (Animation anim : MainWindow.MAIN_WINDOW.getSheetData().getAnimations()){
 			addAnimToPanel(anim);
 		}
-		
+		resetOptionsInnerPanel();
 	}
 	
 	private void addAnimToPanel(Animation anim){
 		JPanel animPanel = new JPanel();
 		animPanel.setName(anim.getName());
-		
+		animPanel.setBackground(Color.BLUE);
+		animPanel.setBackground(DEFAULT_COLOR);
 		JTextField tf = new JTextField(anim.getName());
 		tf.setAction(new AnimAction("", AnimActionType.RENAME, anim));
 		tf.setPreferredSize(new Dimension(80, 25));
@@ -170,7 +189,6 @@ public class AnimTool extends Tool
 		JButton editBtn = new JButton(new AnimAction("Edit", AnimActionType.SELECT, anim));
 		editBtn.setMargin(new Insets(0,0,0,0));
 
-		
 		JButton delBtn = new JButton(new AnimAction("X", AnimActionType.DELETE, anim));
 		delBtn.setBackground(Color.RED);
 		delBtn.setMargin(new Insets(0,0,0,0));
@@ -179,7 +197,7 @@ public class AnimTool extends Tool
 		animPanel.add(editBtn);
 		animPanel.add(delBtn);
 		animListPanel.add(animPanel);
-		
+		resetOptionsInnerPanel();
 	}
 	
 	@Override
@@ -218,6 +236,10 @@ public class AnimTool extends Tool
 						c.getScaledCoord(r.width), c.getScaledCoord(r.height));
 			}
 		}
+	}
+	
+	private void selectAnimation(Component c){
+//		c.
 	}
 
 }

@@ -1,9 +1,11 @@
 package tools;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,8 +24,9 @@ public class Magnifier extends Tool
 		super("Magnifier", "res/mag.png", ImageType.EITHER);
 		
 		JPanel oPanel = getOptionsInnerPanel();
-		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
-		oPanel.add(new JLabel("Magnification:"));
+		oPanel.setLayout(new BorderLayout());
+		JPanel innerPanel = new JPanel();
+		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
 		magAmt = new JTextField();
 		magAmt.addActionListener(new ActionListener()
 		{
@@ -42,7 +45,9 @@ public class Magnifier extends Tool
 			}
 		});
 		
-		oPanel.add(magAmt);
+		innerPanel.add(new JLabel("Magnification:"));
+		innerPanel.add(magAmt);
+		oPanel.add(innerPanel, BorderLayout.NORTH);
 	}
 	
 	@Override

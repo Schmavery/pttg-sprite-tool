@@ -1,6 +1,7 @@
 package tools;
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -37,7 +38,9 @@ public class SnipTool extends Tool
 		super("Snip Tool", "res/scissors.png", ImageType.SHEET);
 		
 		JPanel oPanel = getOptionsInnerPanel();
-		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
+		oPanel.setLayout(new BorderLayout());
+		JPanel innerPanel = new JPanel();
+		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
 		autoSnip = new JCheckBox("Autosnip");
 		
 		deleteButton = new JButton("Delete?");
@@ -64,15 +67,16 @@ public class SnipTool extends Tool
 			}
 		});
 		
-		oPanel.add(autoSnip);
-		oPanel.add(Box.createVerticalGlue());
-		oPanel.add(Box.createVerticalStrut(5));
-		oPanel.add(Box.createVerticalGlue());
-		oPanel.add(deleteAllButton);
-		oPanel.add(Box.createVerticalGlue());
-		oPanel.add(Box.createVerticalStrut(5));
-		oPanel.add(Box.createVerticalGlue());
-		oPanel.add(deleteButton);
+		innerPanel.add(autoSnip);
+		innerPanel.add(Box.createVerticalGlue());
+		innerPanel.add(Box.createVerticalStrut(5));
+		innerPanel.add(Box.createVerticalGlue());
+		innerPanel.add(deleteAllButton);
+		innerPanel.add(Box.createVerticalGlue());
+		innerPanel.add(Box.createVerticalStrut(5));
+		innerPanel.add(Box.createVerticalGlue());
+		innerPanel.add(deleteButton);
+		oPanel.add(innerPanel, BorderLayout.NORTH);
 	}
 	
 	@Override
