@@ -85,10 +85,13 @@ public class PrefPanel extends JPanel
 		
 		JPanel genPanel = new JPanel();
 		JPanel collPanel = new JPanel();
+		JPanel animPanel = new JPanel();
 		tabPane.addTab("General", genPanel);
 		setupGeneralPanel(genPanel);
 		tabPane.addTab("Collision", collPanel);
 		setupCollisionPanel(collPanel);
+		tabPane.addTab("Animation", animPanel);
+		setupAnimationPanel(animPanel);
 		
 		JPanel acceptPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		setupAcceptPanel(acceptPanel);
@@ -155,6 +158,15 @@ public class PrefPanel extends JPanel
 		addPrefItem("Default Collision Height", "coll_h", firstPanel);
 		addPrefItem("Default Collision Width", "coll_w", firstPanel);
 		
+		
+		panel.add(firstPanel);
+		panel.add(Box.createVerticalGlue());
+	}
+	
+	private void setupAnimationPanel(JPanel panel){
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		JPanel firstPanel = new JPanel(new GridLayout(1, 2));
+		addPrefItem("Default Pause", "pause", firstPanel);
 		
 		panel.add(firstPanel);
 		panel.add(Box.createVerticalGlue());

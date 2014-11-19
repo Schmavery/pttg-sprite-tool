@@ -26,7 +26,6 @@ public class BoxTool extends Tool
 	private BoxState state;
 	private LinkedList<Point> pts;
 	private Rectangle rect;
-//	private boolean boxMode;
 	private JCheckBox boxMode;
 
 	public BoxTool()

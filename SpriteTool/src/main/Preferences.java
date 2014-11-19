@@ -59,6 +59,7 @@ public class Preferences implements Cloneable
 		set("coll_w", "8");
 		set("coll_h", "8");
 		set("show_tips", "true");
+		set("pause", "10");
 	}
 	
 	public void savePrefChanges() {

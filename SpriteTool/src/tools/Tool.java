@@ -92,6 +92,12 @@ public abstract class Tool
 		
 	}
 	
+	/**
+	 * Called when the canvas is clicked.
+	 * @param event Original mouse event
+	 * @param x Scaled x coordinate
+	 * @param y Scaled y coordinate
+	 */
 	public abstract void onClick(MouseEvent event, int x, int y);
 	
 	public String getName(){

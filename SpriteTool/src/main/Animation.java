@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Animation
 {
+	private static final int DEFAULT_PAUSE = 10;
 	private static int Id;
 	private String name;
 	private List<ImageData> frames;
@@ -20,6 +21,12 @@ public class Animation
 	public Animation(String name){
 		frames = new LinkedList<>();
 		setName(name);
+		try{
+			pause = Integer.parseInt(Preferences.PREFS.get("pause"));
+		} catch (NumberFormatException e){
+			Preferences.PREFS.set("pause", String.valueOf(DEFAULT_PAUSE));
+			pause = DEFAULT_PAUSE;
+		}
 	}
 	
 	public static void resetId(List<Animation> anims){
@@ -48,8 +55,15 @@ public class Animation
 		this.name = name;
 	}
 	
+	public void shiftFrame(ImageData frame, boolean moveUp){
+		int index = frames.indexOf(frame);
+		int newIndex = Math.max(Math.min(frames.size() - 1, index + (moveUp ? 1 : -1)), 0);
+		frames.add(newIndex, frames.remove(index));
+	}
+	
 	public String getName(){ return name; }
 	
+	public List<ImageData> getFrames(){ return frames; }
 	public String toString(){
 		String ret = "";
 		ret += "anim [["+ getName() +"]]\n";
