@@ -2,10 +2,11 @@ package panels;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -140,74 +141,91 @@ public class PrefPanel extends JPanel
 	}
 	
 	private void setupGeneralPanel(JPanel panel){
+		panel.setLayout(new BorderLayout());
+		JPanel inner = new JPanel();
+		inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
 		
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		addPrefBool("Show Tooltips", "show_tips", panel);
+		addPrefItem("Sheet Magnification", "sheet_mag", inner);
+		addPrefItem("Image Magnification", "image_mag", inner);
+		addPrefItem("AutoSnip Size (px)", "autosnip_size", inner);
 		
-		JPanel firstPanel = new JPanel(new GridLayout(4, 2));
-		
-		addPrefItem("Sheet Magnification", "sheet_mag", firstPanel);
-		addPrefItem("Image Magnification", "image_mag", firstPanel);
-		addPrefItem("AutoSnip Size (px)", "autosnip_size", firstPanel);
-		
-		
-		
-		panel.add(firstPanel);
-		panel.add(Box.createVerticalGlue());
+		panel.add(inner, BorderLayout.NORTH);
 	}
 	
 	private void setupCollisionPanel(JPanel panel){
+		panel.setLayout(new BorderLayout());
+		JPanel inner = new JPanel();
+		inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
 		
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		addPrefBool("Auto Collision Box", "coll_auto", panel);
+		final JCheckBox collChk = addPrefBool("Auto Collision Box", "coll_auto", inner);
+		final JPanel collContainer = new JPanel();
+		collContainer.setLayout(new BoxLayout(collContainer, BoxLayout.Y_AXIS));
+		addPrefItem("Collision X", "coll_x", collContainer);
+		addPrefItem("Collision Y", "coll_y", collContainer);
+		addPrefItem("Collision Height", "coll_h", collContainer);
+		addPrefItem("Collision Width", "coll_w", collContainer);
+		setContainerEnabledState(collContainer, collChk.isSelected());
+		inner.add(collContainer);
 		
-		JPanel secondPanel = new JPanel(new GridLayout(5, 2));
-		addPrefItem("Collision X", "coll_x", secondPanel);
-		addPrefItem("Collision Y", "coll_y", secondPanel);
-		addPrefItem("Collision Height", "coll_h", secondPanel);
-		addPrefItem("Collision Width", "coll_w", secondPanel);
-		
-		
-		panel.add(secondPanel);
-		panel.add(Box.createVerticalGlue());
+		collChk.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				System.out.println("Stuffff");
+				setContainerEnabledState(collContainer, collChk.isSelected());
+			}
+		});
+
+		panel.add(inner, BorderLayout.NORTH);
 	}
 	
+	private void setContainerEnabledState(Component container, boolean enabled) {
+        if (container instanceof JPanel){
+        	for (Component comp : ((Container) container).getComponents()){
+        		setContainerEnabledState(comp, enabled);
+        	}
+        } else {
+        	((Component) container).setEnabled(enabled);
+        }
+	}
+
 	private void setupAnimationPanel(JPanel panel){
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		JPanel firstPanel = new JPanel(new GridLayout(1, 2));
-		addPrefItem("Default Pause", "pause", firstPanel);
+		panel.setLayout(new BorderLayout());
+		JPanel inner = new JPanel();
+		inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
 		
-		panel.add(firstPanel);
-		panel.add(Box.createVerticalGlue());
+		addPrefItem("Default Pause", "pause", inner);
+		
+		panel.add(inner, BorderLayout.NORTH);
 	}
 	
 	private void setupAnchorPanel(JPanel panel){
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		addPrefBool("Auto Anchor", "anchor_auto", panel);
+		panel.setLayout(new BorderLayout());
+		JPanel inner = new JPanel();
+		inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
 		
-		JPanel firstPanel = new JPanel(new GridLayout(2, 2, 0, 0));
-		addPrefItem("Anchor X", "anchor_x", firstPanel);
-		addPrefItem("Anchor Y", "anchor_y", firstPanel);
+		addPrefBool("Auto Anchor", "anchor_auto", inner);
+		addPrefItem("Anchor X", "anchor_x", inner);
+		addPrefItem("Anchor Y", "anchor_y", inner);
 		
-		panel.add(firstPanel);
-		panel.add(Box.createVerticalGlue());
+		panel.add(inner, BorderLayout.NORTH);;
 	}
-	
+
 	private void addPrefItem(String title, String key, JPanel container){
 		Dimension d = new Dimension(150, 30);
 		JLabel l = new JLabel(title + ":");
 		l.setHorizontalAlignment(JLabel.CENTER);
 		l.setPreferredSize(d);
 		JPanel wrapper = new JPanel();
-		wrapper.add(l);
-		container.add(wrapper);
 		
 		JTextField txt = new JTextField(tmpPrefs.get(key));
 		txt.setPreferredSize(d);
 		txt.setName(key);
 		txt.getDocument().putProperty(PROP_KEY, key);
 		txt.getDocument().addDocumentListener(docListener);
-		wrapper = new JPanel();
+
+		wrapper.add(l);
 		wrapper.add(txt);
 		container.add(wrapper);
 	}
