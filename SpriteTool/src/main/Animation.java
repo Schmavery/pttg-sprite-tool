@@ -64,6 +64,7 @@ public class Animation
 	public String getName(){ return name; }
 	
 	public List<ImageData> getFrames(){ return frames; }
+	
 	public String toString(){
 		String ret = "";
 		ret += "anim [["+ getName() +"]]\n";
@@ -74,5 +75,18 @@ public class Animation
 		ret += "endanim\n";
 		
 		return ret;
+	}
+	
+	public void loadData(String data){
+		for (String l : data.split("\n")){
+			if (l.startsWith("anim ")){
+				name = l.substring(l.indexOf("[[")+2, l.indexOf("]]"));
+			} else if (l.startsWith("pause ")){
+				pause = Integer.valueOf(l.replaceAll("[^\\d]", ""));
+			} else if (l.startsWith("frame ")){
+				int frameId = Integer.valueOf(l.replaceAll("[^\\d]", ""));
+				addFrame(MainWindow.MAIN_WINDOW.getSheetData().getImageDataById(frameId));
+			}
+		}
 	}
 }

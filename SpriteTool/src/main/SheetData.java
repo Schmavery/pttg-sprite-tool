@@ -131,4 +131,14 @@ public class SheetData
 	public LinkedList<Animation> getAnimations(){
 		return anims;
 	}
+	
+	public ImageData getImageDataById(int id){
+		for (ImageData iData : imgs){
+			if (iData.getId() == id){
+				return iData;
+			}
+		}
+		System.out.println("Could not find ImageData with id "+id);
+		return null;
+	}
 }

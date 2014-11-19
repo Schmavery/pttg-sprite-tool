@@ -338,6 +338,10 @@ public class MainWindow extends JFrame
 					System.out.print(iData.toString() + "\n");
 				}
 			}
+			for (Animation anim : getSheetData().getAnimations()){
+				out.write(anim.toString() + "\n");
+				System.out.print(anim.toString() + "\n");
+			}
 		}
 		catch (FileNotFoundException e)
 		{
@@ -365,9 +369,18 @@ public class MainWindow extends JFrame
 				if (str.startsWith("img")){
 					sb.setLength(0);
 					sb.append(str+"\n");
+				} else if (str.startsWith("anim"))
+				{
+					sb.setLength(0);
+					sb.append(str+"\n");
 				} else if (str.startsWith("endimg")){
 					String data = sb.toString();
-					getImagePanel().addSnippedImage(ImageData.parseLoadRect(data)).loadData(data);;
+					getImagePanel().addSnippedImage(ImageData.parseLoadRect(data)).loadData(data);
+				} else if (str.startsWith("endanim")){
+					String data = sb.toString();
+					Animation tmpAnim = new Animation();
+					getSheetData().getAnimations().add(tmpAnim);
+					tmpAnim.loadData(data);
 				} else {
 					sb.append(str+"\n");
 				}
