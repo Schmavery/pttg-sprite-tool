@@ -60,6 +60,9 @@ public class Preferences implements Cloneable
 		set("coll_h", "8");
 		set("show_tips", "true");
 		set("pause", "10");
+		set("anchor_auto", "true");
+		set("anchor_x", "8");
+		set("anchor_y", "10");
 	}
 	
 	public void savePrefChanges() {

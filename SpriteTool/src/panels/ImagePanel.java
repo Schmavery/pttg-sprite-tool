@@ -120,6 +120,7 @@ public class ImagePanel extends JPanel
 	
 	public ImageData addSnippedImage(Rectangle rect){
 		boolean autoColl = Boolean.parseBoolean(Preferences.PREFS.get("coll_auto"));
+		boolean autoAnchor = Boolean.parseBoolean(Preferences.PREFS.get("anchor_auto"));
 		
 		if (sheetData.hasImage() && rect != null){
 			// Check if this rect overlaps another.
@@ -170,6 +171,11 @@ public class ImagePanel extends JPanel
 				p.addPoint(collX, collY + collH);
 				
 				iData.setPoly(p);
+			}
+			if (autoAnchor){
+				int aX = Integer.valueOf(Preferences.PREFS.get("anchor_x"));
+				int aY = Integer.valueOf(Preferences.PREFS.get("anchor_y"));
+				iData.setAnchor(aX, aY);
 			}
 			return iData;
 		}

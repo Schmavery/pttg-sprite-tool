@@ -1,6 +1,7 @@
 package panels;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -86,12 +87,18 @@ public class PrefPanel extends JPanel
 		JPanel genPanel = new JPanel();
 		JPanel collPanel = new JPanel();
 		JPanel animPanel = new JPanel();
+		JPanel anchorPanel = new JPanel();
+		
 		tabPane.addTab("General", genPanel);
-		setupGeneralPanel(genPanel);
+		tabPane.addTab("Anchor", anchorPanel);
 		tabPane.addTab("Collision", collPanel);
-		setupCollisionPanel(collPanel);
 		tabPane.addTab("Animation", animPanel);
+		
+		setupGeneralPanel(genPanel);
+		setupAnchorPanel(anchorPanel);
+		setupCollisionPanel(collPanel);
 		setupAnimationPanel(animPanel);
+		
 		
 		JPanel acceptPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		setupAcceptPanel(acceptPanel);
@@ -135,10 +142,10 @@ public class PrefPanel extends JPanel
 	private void setupGeneralPanel(JPanel panel){
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		addPrefBool("Show Tooltips", "show_tips", panel);
 		
 		JPanel firstPanel = new JPanel(new GridLayout(4, 2));
 		
-		addPrefBool("Show Tooltips", "show_tips", firstPanel);
 		addPrefItem("Sheet Magnification", "sheet_mag", firstPanel);
 		addPrefItem("Image Magnification", "image_mag", firstPanel);
 		addPrefItem("AutoSnip Size (px)", "autosnip_size", firstPanel);
@@ -150,16 +157,18 @@ public class PrefPanel extends JPanel
 	}
 	
 	private void setupCollisionPanel(JPanel panel){
+		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		JPanel firstPanel = new JPanel(new GridLayout(5, 2));
-		addPrefBool("Autogen Collision box", "coll_auto", firstPanel);
-		addPrefItem("Default Collision X", "coll_x", firstPanel);
-		addPrefItem("Default Collision Y", "coll_y", firstPanel);
-		addPrefItem("Default Collision Height", "coll_h", firstPanel);
-		addPrefItem("Default Collision Width", "coll_w", firstPanel);
+		addPrefBool("Auto Collision Box", "coll_auto", panel);
+		
+		JPanel secondPanel = new JPanel(new GridLayout(5, 2));
+		addPrefItem("Collision X", "coll_x", secondPanel);
+		addPrefItem("Collision Y", "coll_y", secondPanel);
+		addPrefItem("Collision Height", "coll_h", secondPanel);
+		addPrefItem("Collision Width", "coll_w", secondPanel);
 		
 		
-		panel.add(firstPanel);
+		panel.add(secondPanel);
 		panel.add(Box.createVerticalGlue());
 	}
 	
@@ -172,30 +181,49 @@ public class PrefPanel extends JPanel
 		panel.add(Box.createVerticalGlue());
 	}
 	
+	private void setupAnchorPanel(JPanel panel){
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		addPrefBool("Auto Anchor", "anchor_auto", panel);
+		
+		JPanel firstPanel = new JPanel(new GridLayout(2, 2, 0, 0));
+		addPrefItem("Anchor X", "anchor_x", firstPanel);
+		addPrefItem("Anchor Y", "anchor_y", firstPanel);
+		
+		panel.add(firstPanel);
+		panel.add(Box.createVerticalGlue());
+	}
+	
 	private void addPrefItem(String title, String key, JPanel container){
-		Dimension d = new Dimension(200, 15);
+		Dimension d = new Dimension(150, 30);
 		JLabel l = new JLabel(title + ":");
 		l.setHorizontalAlignment(JLabel.CENTER);
 		l.setPreferredSize(d);
-		container.add(l);
+		JPanel wrapper = new JPanel();
+		wrapper.add(l);
+		container.add(wrapper);
 		
 		JTextField txt = new JTextField(tmpPrefs.get(key));
 		txt.setPreferredSize(d);
 		txt.setName(key);
 		txt.getDocument().putProperty(PROP_KEY, key);
 		txt.getDocument().addDocumentListener(docListener);
-		container.add(txt);
+		wrapper = new JPanel();
+		wrapper.add(txt);
+		container.add(wrapper);
 	}
 	
-	private void addPrefBool(String title, String key, JPanel container){
+	private JCheckBox addPrefBool(String title, String key, JPanel container){
 		Dimension d = new Dimension(200, 15);
 		JCheckBox chk = new JCheckBox(title, Boolean.parseBoolean(tmpPrefs.get(key)));
 		chk.setPreferredSize(d);
 		chk.setName(key);
+		chk.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		chk.addChangeListener(changeListener);
+		container.add(Box.createVerticalStrut(10));
 		container.add(chk);
-		container.add(Box.createHorizontalGlue());
+		container.add(Box.createVerticalStrut(5));
+		return chk;
 	}
 
 }
