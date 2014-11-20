@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
@@ -19,7 +20,6 @@ public class ImageData
 	private LinkedList<Hook> hooks;
 	private Rectangle rect;
 	private Polygon collisionPoly;
-//	private SheetData owner;
 	private ImageType type;
 	private BufferedImage img;
 	private float scale;
@@ -169,6 +169,17 @@ public class ImageData
 	
 	public void clearHooks(){
 		hooks.clear();
+	}
+	
+	public void generateConvexHullPoly(){
+		collisionPoly = null;
+	}
+ 
+	public boolean isPixel(int x, int y){
+		Color c = new Color(img.getRGB(x, y));
+		System.out.println(c.getRed()+" "+c.getGreen()+" "+c.getBlue()+" "+c.getAlpha());
+//		System.out.println(img.getRGB(x, y) );
+		return true;
 	}
 	
 	@Override

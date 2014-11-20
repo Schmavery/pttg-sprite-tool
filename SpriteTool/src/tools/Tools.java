@@ -11,7 +11,8 @@ public class Tools
 	private static SnipTool snipTool = new SnipTool();
 	private static HookTool hookTool = new HookTool();
 	private static AnimTool animTool = new AnimTool();
-	private static Tool[] tools = {mag, anchor, boxTool, snipTool, hookTool, animTool};
+	private static PaletteTool paletteTool = new PaletteTool();
+	private static Tool[] tools = {mag, anchor, boxTool, snipTool, hookTool, animTool, paletteTool};
 	
 	public static Magnifier getMagnifier(){
 		return mag;
@@ -37,9 +38,17 @@ public class Tools
 		return animTool;
 	}
 	
+	public static PaletteTool getPaletteTool(){
+		return paletteTool;
+	}
+	
 	public static void setButtonEnabledState(ImageType type){
 		for (Tool t : tools){
 			t.setButtonEnabledState(type);
 		}
+	}
+	
+	public static Tool[] getTools(){
+		return tools;
 	}
 }

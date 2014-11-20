@@ -215,16 +215,14 @@ public class MainWindow extends JFrame
 	private void setupToolbar(JPanel toolbarShell){
 		toolbarShell.setLayout(new BorderLayout());
 		
-		JPanel toolbar = new JPanel(new GridLayout(2, 3, 3, 3));
+		JPanel toolbar = new JPanel(new GridLayout(3, 3, 3, 3));
 		toolbar.setBorder(new TitledBorder("Toolbar"));
 		
-		createToolbarButton(Tools.getMagnifier(), toolbar);
-		createToolbarButton(Tools.getSnipTool(), toolbar);
-		createToolbarButton(Tools.getAnchor(), toolbar);
-		createToolbarButton(Tools.getBoxTool(), toolbar);
-		createToolbarButton(Tools.getHookTool(), toolbar);
-		createToolbarButton(Tools.getAnimTool(), toolbar);
+		for (Tool t : Tools.getTools()){
+			createToolbarButton(t, toolbar);
+		}
 
+//		toolbar.add(new JButton("A"));
 //		toolbar.add(new JButton("A"));
 		
 		optionsPanel = new OptionsPanel();
