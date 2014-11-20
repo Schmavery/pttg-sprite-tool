@@ -15,12 +15,11 @@ Finished Features:
 - Animation support
   - Edit animation speed
   - Choose frames
+  - Preview animations
 
 Future Features:
 ----------------
 - Palette areas: Define areas that should be the same color, so that palette switching can be done later.
-- Additional animation support:
-  - Preview animations
 - Basic sprite editing
   - Pencil tool
   - Color picker
