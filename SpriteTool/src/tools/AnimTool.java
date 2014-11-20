@@ -71,6 +71,7 @@ public class AnimTool extends Tool
 			case DELETE:
 				AnimTool.this.animListPanel.remove((Component) ((JButton) event.getSource()).getParent());
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().remove(anim);
+				MainWindow.MAIN_WINDOW.setIsDirty(true);
 				break;
 			case SELECT:
 				selectAnimation(((Component)event.getSource()).getParent(), anim);
@@ -80,14 +81,15 @@ public class AnimTool extends Tool
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().add(anim);
 				JPanel added = addAnimToPanel(anim);
 				selectAnimation(added, anim);
+				MainWindow.MAIN_WINDOW.setIsDirty(true);
 				break;
 			case RENAME:
 				this.anim.setName(((JTextField) event.getSource()).getText());
 				selectAnimation(((Component)event.getSource()).getParent(), this.anim);
+				MainWindow.MAIN_WINDOW.setIsDirty(true);
 				break;
 			}
 			preview.updateAnimation(selectedAnim);
-			MainWindow.MAIN_WINDOW.setIsDirty(true);
 			animListPanel.getParent().getParent().validate();
 			MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
 		}
@@ -99,26 +101,7 @@ public class AnimTool extends Tool
 		@Override
 		public void actionPerformed(ActionEvent event)
 		{
-			switch (((Component) event.getSource()).getName()){
-			case "ADD":
-				selectedAnim.addFrame(selectedFrame);
-				break;
-			case "REMOVE":
-				selectedAnim.getFrames().remove(selectedFrame);
-				break;
-			case "UP":
-				selectedAnim.shiftFrame(selectedFrame, true);
-				break;
-			case "DOWN":
-				selectedAnim.shiftFrame(selectedFrame, false);
-				break;
-			default:
-				System.out.println("Invalid frame action: " + ((Component) event.getSource()).getName());
-			}
-			preview.updateAnimation(selectedAnim);
-			MainWindow.MAIN_WINDOW.setIsDirty(true);
-			MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
-			animListPanel.getParent().getParent().validate();
+			doFrameAction(((Component) event.getSource()).getName());
 		}
 	};
 
@@ -229,6 +212,13 @@ public class AnimTool extends Tool
 				}
 			}
 		}
+		if (selectedFrame != null && event.isControlDown()){
+			if (selectedAnim.getFrames().contains(selectedFrame)){
+				doFrameAction("REMOVE");
+			} else {
+				doFrameAction("ADD");
+			}
+		}
 	}
 	
 	@Override
@@ -262,6 +252,29 @@ public class AnimTool extends Tool
 		selectedAnimPanel = parent;
 		selectedAnimPanel.setBackground(Color.DARK_GRAY);
 		selectedAnim = anim;
+	}
+	
+	private void doFrameAction(String action){
+		switch (action){
+		case "ADD":
+			selectedAnim.addFrame(selectedFrame);
+			break;
+		case "REMOVE":
+			selectedAnim.getFrames().remove(selectedFrame);
+			break;
+		case "UP":
+			selectedAnim.shiftFrame(selectedFrame, true);
+			break;
+		case "DOWN":
+			selectedAnim.shiftFrame(selectedFrame, false);
+			break;
+		default:
+			System.out.println("Invalid frame action: " + action);
+		}
+		preview.updateAnimation(selectedAnim);
+		MainWindow.MAIN_WINDOW.setIsDirty(true);
+		MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
+		animListPanel.getParent().getParent().validate();
 	}
 
 }
