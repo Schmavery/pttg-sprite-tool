@@ -357,7 +357,6 @@ public class MainWindow extends JFrame
 	 * @return Path of the image for this data.
 	 */
 	public void load(String path){
-//		String loadedPath = savePath;
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path))))
 		{
 			StringBuilder sb = new StringBuilder();
@@ -385,6 +384,8 @@ public class MainWindow extends JFrame
 				str = br.readLine();
 			}
 			ImageData.resetId(getSheetData().getAllImageData());
+			Animation.resetId(getSheetData().getAnimations());
+			currentTool.selected();
 		}
 		catch (FileNotFoundException e)
 		{
@@ -394,7 +395,6 @@ public class MainWindow extends JFrame
 		{
 			e.printStackTrace();
 		}
-//		savePath = loadedPath;
 	}
 
 	public void exit(){

@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
+import panels.AnimPreviewPanel;
 import main.Animation;
 import main.Canvas;
 import main.ImageData;
@@ -44,6 +45,7 @@ public class AnimTool extends Tool
 	JPanel animListPanel;
 	JPanel editPanel;
 	Container selectedAnimPanel;
+	AnimPreviewPanel preview;
 	
 	class AnimAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
@@ -76,13 +78,16 @@ public class AnimTool extends Tool
 			case NEW:
 				Animation anim = new Animation();
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().add(anim);
-				JPanel added =addAnimToPanel(anim);
+				JPanel added = addAnimToPanel(anim);
 				selectAnimation(added, anim);
 				break;
 			case RENAME:
 				this.anim.setName(((JTextField) event.getSource()).getText());
+				selectAnimation(((Component)event.getSource()).getParent(), this.anim);
 				break;
 			}
+			preview.updateAnimation(selectedAnim);
+			MainWindow.MAIN_WINDOW.setIsDirty(true);
 			animListPanel.getParent().getParent().validate();
 			MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
 		}
@@ -110,6 +115,8 @@ public class AnimTool extends Tool
 			default:
 				System.out.println("Invalid frame action: " + ((Component) event.getSource()).getName());
 			}
+			preview.updateAnimation(selectedAnim);
+			MainWindow.MAIN_WINDOW.setIsDirty(true);
 			MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
 			animListPanel.getParent().getParent().validate();
 		}
@@ -151,9 +158,12 @@ public class AnimTool extends Tool
 		upperPanel.add(newAnimBtn);
 		upperPanel.add(editPanel);
 		upperPanel.add(Box.createVerticalStrut(10));
+		preview = new AnimPreviewPanel();
+		
 		
 		oPanel.add(upperPanel, BorderLayout.NORTH);
 		oPanel.add(animListScrollPane, BorderLayout.CENTER);
+		oPanel.add(preview, BorderLayout.SOUTH);
 	}
 	
 	public void addFrameEditButton(JPanel container, String name, String title){
@@ -175,6 +185,12 @@ public class AnimTool extends Tool
 			addAnimToPanel(anim);
 		}
 		resetOptionsInnerPanel();
+	}
+	
+	@Override
+	public void deselected(){
+		super.deselected();
+		preview.lazyKillRedrawThread();
 	}
 	
 	private JPanel addAnimToPanel(Animation anim){

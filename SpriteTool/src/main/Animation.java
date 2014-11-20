@@ -65,6 +65,8 @@ public class Animation
 	
 	public List<ImageData> getFrames(){ return frames; }
 	
+	public int getPause(){ return pause; }
+	
 	public String toString(){
 		String ret = "";
 		ret += "anim [["+ getName() +"]]\n";

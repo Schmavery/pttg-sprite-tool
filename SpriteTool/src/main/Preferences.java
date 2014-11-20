@@ -59,7 +59,7 @@ public class Preferences implements Cloneable
 		set("coll_w", "8");
 		set("coll_h", "8");
 		set("show_tips", "true");
-		set("pause", "10");
+		set("pause", "100");
 		set("anchor_auto", "true");
 		set("anchor_x", "8");
 		set("anchor_y", "10");

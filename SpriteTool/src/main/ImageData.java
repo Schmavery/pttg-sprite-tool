@@ -113,7 +113,6 @@ public class ImageData
 		} else {
 			anchorPt.setLocation(x, y);
 		}
-		System.out.println("Anchor set at " + anchorPt.toString());
 	}
 	
 	public void resetAnchor(){
