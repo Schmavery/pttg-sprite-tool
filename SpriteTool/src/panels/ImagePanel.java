@@ -15,12 +15,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import main.Canvas;
 import main.ImageData;
-import main.MainWindow;
 import main.ImageData.ImageType;
 import main.Preferences;
 import main.SheetData;
@@ -51,8 +51,8 @@ public class ImagePanel extends JPanel
 		lowerPanel.setPreferredSize(new Dimension(0, THUMB_WIDTH+20));
 		
 		JScrollPane lowerRightScroll = new JScrollPane();
-		lowerRightScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		lowerRightScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		lowerRightScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		lowerRightScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		lowerRight = new JPanel();
 		lowerRight.setLayout(new BoxLayout(lowerRight, BoxLayout.X_AXIS));
 		lowerRightScroll.setViewportView(lowerRight);
@@ -89,12 +89,12 @@ public class ImagePanel extends JPanel
 		return canvas;
 	}
 	
-	private Image getMaxScaledInstance(BufferedImage img, int maxDimension){
+	private static Image getMaxScaledInstance(BufferedImage img, int maxDimension){
 		float max = maxDimension;
 		float ratio = Math.min(max/img.getWidth(), max/img.getHeight());
 		int width = (int) (img.getWidth()*ratio);
 		int height = (int) (img.getHeight()*ratio);
-		return img.getScaledInstance(width, height, BufferedImage.SCALE_AREA_AVERAGING);
+		return img.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING);
 	}
 
 	public void setSheetPath(String path){
@@ -114,7 +114,6 @@ public class ImagePanel extends JPanel
 	
 	public void switchImage(JButton src, ImageType type){
 		sheetData.setCurrentImage(src);
-		MainWindow.MAIN_WINDOW.getCurrentTool().resetOptionsInnerPanel();
 		getCanvas().refresh();
 	}
 	

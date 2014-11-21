@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -83,7 +84,7 @@ public class PrefPanel extends JPanel
 		tmpPrefs = new Preferences();
 		
 		JTabbedPane tabPane = new JTabbedPane();
-		tabPane.setTabPlacement(JTabbedPane.LEFT);
+		tabPane.setTabPlacement(SwingConstants.LEFT);
 		
 		JPanel genPanel = new JPanel();
 		JPanel collPanel = new JPanel();
@@ -216,7 +217,7 @@ public class PrefPanel extends JPanel
 	private void addPrefItem(String title, String key, JPanel container){
 		Dimension d = new Dimension(150, 30);
 		JLabel l = new JLabel(title + ":");
-		l.setHorizontalAlignment(JLabel.CENTER);
+		l.setHorizontalAlignment(SwingConstants.CENTER);
 		l.setPreferredSize(d);
 		JPanel wrapper = new JPanel();
 		

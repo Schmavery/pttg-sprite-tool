@@ -116,6 +116,10 @@ public abstract class Tool
 		}
 	}
 	
+	public ImageType getType(){
+		return worksOn;
+	}
+	
 	public static String formatFloat(float f){
 		if(f == (int) f)
 	        return String.format("%d",(int)f);

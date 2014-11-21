@@ -238,9 +238,7 @@ public class MainWindow extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent event)
 			{
-				currentTool.deselected();
-				currentTool = tool;
-				currentTool.selected();
+				setCurrentTool(tool);
 			}
 		});
 		button.setIcon(new ImageIcon(tool.getImage()));
@@ -267,6 +265,12 @@ public class MainWindow extends JFrame
 
 	public Tool getCurrentTool(){
 		return currentTool;
+	}
+	
+	public void setCurrentTool(Tool tool){
+		currentTool.deselected();
+		currentTool = tool;
+		currentTool.selected();
 	}
 	
 	public void openImage(String path, boolean loadData){

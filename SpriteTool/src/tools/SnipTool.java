@@ -14,7 +14,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import main.Canvas;
@@ -28,11 +27,8 @@ public class SnipTool extends Tool
 	private enum SnipState {START, FIRST, SECOND, SELECTED};
 	private SnipState state = SnipState.START;
 	
-	private JCheckBox autoSnip;
 	private Rectangle rect;
-	
 	private JButton deleteButton;
-	private JButton deleteAllButton;
 	
 	public SnipTool(){
 		super("Snip Tool", "res/scissors.png", ImageType.SHEET);
@@ -41,7 +37,18 @@ public class SnipTool extends Tool
 		oPanel.setLayout(new BorderLayout());
 		JPanel innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-		autoSnip = new JCheckBox("Autosnip");
+		
+		JButton autoSnip;
+		autoSnip = new JButton("Autosnip");
+		autoSnip.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				doAutoSnip();
+				MainWindow.MAIN_WINDOW.getCanvas().refresh();
+			}
+		});
 		
 		deleteButton = new JButton("Delete?");
 		deleteButton.setBackground(Color.RED);
@@ -55,6 +62,7 @@ public class SnipTool extends Tool
 			}
 		});
 
+		JButton deleteAllButton;
 		deleteAllButton = new JButton("Delete All?");
 		deleteAllButton.setBackground(Color.RED);
 		deleteAllButton.addActionListener(new ActionListener()
@@ -69,11 +77,11 @@ public class SnipTool extends Tool
 		
 		innerPanel.add(autoSnip);
 		innerPanel.add(Box.createVerticalGlue());
-		innerPanel.add(Box.createVerticalStrut(5));
+		innerPanel.add(Box.createVerticalStrut(8));
 		innerPanel.add(Box.createVerticalGlue());
 		innerPanel.add(deleteAllButton);
 		innerPanel.add(Box.createVerticalGlue());
-		innerPanel.add(Box.createVerticalStrut(5));
+		innerPanel.add(Box.createVerticalStrut(8));
 		innerPanel.add(Box.createVerticalGlue());
 		innerPanel.add(deleteButton);
 		oPanel.add(innerPanel, BorderLayout.NORTH);
@@ -94,56 +102,51 @@ public class SnipTool extends Tool
 	@Override
 	public void onClick(MouseEvent event, int x, int y)
 	{
-		if (autoSnip.isSelected()){
-			doAutoSnip();
-			autoSnip.setSelected(false);
-		} else {
-			switch (state){
-			case START:
-				// Check if you clicked in an existing rect
-				boolean exists = false;
-				for (ImageData iData : MainWindow.MAIN_WINDOW.getSheetData().getAllImageData()){
-					if (iData.getType() != ImageType.SHEET && iData.getRect().contains(x, y)){
-						state = SnipState.SELECTED;
-						rect = (Rectangle) iData.getRect();
-						setDeleteVisibility(true);
-						exists = true;
-						break;
-					}
-				}
-				if (!exists){
-					rect = new Rectangle();
-					rect.setLocation(x, y);
-					state = SnipState.FIRST;
-				}
-				break;
-			case FIRST:
-				if (x <= rect.x || y <= rect.y){
-					rect.setLocation(x, y);
+		switch (state){
+		case START:
+			// Check if you clicked in an existing rect
+			boolean exists = false;
+			for (ImageData iData : MainWindow.MAIN_WINDOW.getSheetData().getAllImageData()){
+				if (iData.getType() != ImageType.SHEET && iData.getRect().contains(x, y)){
+					state = SnipState.SELECTED;
+					rect = (Rectangle) iData.getRect();
+					setDeleteVisibility(true);
+					exists = true;
 					break;
 				}
-				rect.setSize(x - rect.x + 1, y - rect.y + 1);
-				state = SnipState.SECOND;
-				break;
-			case SECOND:
-				if (rect.contains(x, y)){
-					MainWindow.MAIN_WINDOW.getImagePanel().addSnippedImage(rect);
-				}
-				rect = null;
-				state = SnipState.START;
-				break;
-			case SELECTED:
-				rect = null;
-				state = SnipState.START;
-				setDeleteVisibility(false);
-				break;
-			default:
+			}
+			if (!exists){
+				rect = new Rectangle();
+				rect.setLocation(x, y);
+				state = SnipState.FIRST;
+			}
+			break;
+		case FIRST:
+			if (x <= rect.x || y <= rect.y){
+				rect.setLocation(x, y);
 				break;
 			}
+			rect.setSize(x - rect.x + 1, y - rect.y + 1);
+			state = SnipState.SECOND;
+			break;
+		case SECOND:
+			if (rect.contains(x, y)){
+				MainWindow.MAIN_WINDOW.getImagePanel().addSnippedImage(rect);
+			}
+			rect = null;
+			state = SnipState.START;
+			break;
+		case SELECTED:
+			rect = null;
+			state = SnipState.START;
+			setDeleteVisibility(false);
+			break;
+		default:
+			break;
 		}
 	}
 
-	public void doAutoSnip(){
+	public static void doAutoSnip(){
 		int imgSize = Integer.parseInt(Preferences.PREFS.get("autosnip_size"));
 		BufferedImage img = MainWindow.MAIN_WINDOW.getSheetData().getImage();
 		Rectangle rect;

@@ -70,11 +70,10 @@ public class ImageData
 	
 	
 	public float setScale(float scale){
-		scale = Math.max(1, Math.min(MAX_MAG,scale));
-		this.scale = scale;
+		this.scale = Math.max(1, Math.min(MAX_MAG,scale));
 		MainWindow.MAIN_WINDOW.getCanvas().refresh();
-		System.out.println("Set scale to "+scale);
-		return scale;
+		System.out.println("Set scale to "+this.scale);
+		return this.scale;
 	}
 	
 	public void resetScale(){

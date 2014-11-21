@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import tools.Tools;
 import main.ImageData.ImageType;
 
 public class SheetData
@@ -105,6 +106,12 @@ public class SheetData
 		for (ImageData iData : imgs){
 			if (iData.getButton().equals(button)){
 				currImgData = iData;
+				ImageType type = currImgData.getType();
+				if (MainWindow.MAIN_WINDOW.getCurrentTool().getType() != type){
+					MainWindow.MAIN_WINDOW.setCurrentTool(Tools.getMagnifier());
+				} else {
+					MainWindow.MAIN_WINDOW.getCurrentTool().resetOptionsInnerPanel();
+				}
 				return;
 			}
 		}
