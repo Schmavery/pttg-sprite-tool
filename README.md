@@ -12,6 +12,7 @@ Finished Features:
 - Set anchor point to define the center of the image.
 - Hooks: Labelled points on the image to which behaviours can be attached.
 - Bounding Boxes: Draw a convex polygon to define a sprite's collision box.
+  - Ability to automatically generate a convex hull for a sprite.
 - Animation support
   - Edit animation speed
   - Choose frames

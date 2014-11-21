@@ -110,9 +110,9 @@ public class Canvas extends JPanel implements MouseListener, MouseMotionListener
 					xCoords = imgData.getPoly().xpoints;
 					yCoords = imgData.getPoly().ypoints;
 					for (int i = 0; i < imgData.getPoly().npoints; i++){
-						g.drawLine(getScaledCoord(xCoords[i]), getScaledCoord(yCoords[i]), 
-								getScaledCoord(xCoords[(i + 1) % imgData.getPoly().npoints]), 
-								getScaledCoord(yCoords[(i + 1) % imgData.getPoly().npoints]));
+						g.drawLine(getScaledCoord(xCoords[i] + 0.5), getScaledCoord(yCoords[i] + 0.5), 
+								getScaledCoord(xCoords[(i + 1) % imgData.getPoly().npoints] + 0.5), 
+								getScaledCoord(yCoords[(i + 1) % imgData.getPoly().npoints] + 0.5));
 					}
 				}
 				

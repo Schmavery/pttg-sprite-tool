@@ -1,10 +1,10 @@
 package main;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -171,15 +171,58 @@ public class ImageData
 		hooks.clear();
 	}
 	
-	public void generateConvexHullPoly(){
-		collisionPoly = null;
+	public void generateConvexHullPoly() {
+		 	ArrayList<Point> pts = new ArrayList<>();
+			int k = 0;
+
+			// Build lower hull
+			for (int i = 0; i < rect.width; i++) {
+				for (int j = 0; j < rect.height; j++) {
+					if (isPixel(i, j)){
+						Point pt = new Point(i, j);
+						while (k >= 2 && cross(pts.get(k - 2), pts.get(k - 1), pt) <= 0)
+							k--;
+						if (k < pts.size()){
+							pts.set(k, pt);
+						} else {
+							pts.add(pt);
+						}
+						k++;
+					}
+				}
+			}
+ 
+			// Build upper hull
+			int t = k + 1;
+			for (int i = rect.width - 1; i >= 0 ; i--) {
+				for (int j = rect.height - 1; j >= 0; j--) {
+					if (isPixel(i, j)){
+						Point pt = new Point(i, j);
+						while (k >= t && cross(pts.get(k - 2), pts.get(k - 1), pt) <= 0)
+							k--;
+						if (k < pts.size()){
+							pts.set(k, pt);
+						} else {
+							pts.add(pt);
+						}
+						k++;
+					}
+				}
+			}
+		collisionPoly = new Polygon();
+		for (Point p : pts.subList(0, k)){
+			collisionPoly.addPoint(p.x, p.y);
+		}
+	}
+	
+	public static long cross(Point O, Point A, Point B) {
+		return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
 	}
  
 	public boolean isPixel(int x, int y){
-		Color c = new Color(img.getRGB(x, y));
-		System.out.println(c.getRed()+" "+c.getGreen()+" "+c.getBlue()+" "+c.getAlpha());
-//		System.out.println(img.getRGB(x, y) );
-		return true;
+		int gX = rect.x + x;
+		int gY = rect.y + y;
+		return MainWindow.MAIN_WINDOW.getSheetData().getImage().getRGB(gX, gY) != 0;
 	}
 	
 	@Override

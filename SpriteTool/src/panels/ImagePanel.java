@@ -120,6 +120,7 @@ public class ImagePanel extends JPanel
 	
 	public ImageData addSnippedImage(Rectangle rect){
 		boolean autoColl = Boolean.parseBoolean(Preferences.PREFS.get("coll_auto"));
+		boolean autoHull = Boolean.parseBoolean(Preferences.PREFS.get("hull_auto"));
 		boolean autoAnchor = Boolean.parseBoolean(Preferences.PREFS.get("anchor_auto"));
 		
 		if (sheetData.hasImage() && rect != null){
@@ -156,7 +157,9 @@ public class ImagePanel extends JPanel
 			});
 			
 			ImageData iData = sheetData.newImageData(rect, img, button);
-			if (autoColl){
+			if (autoHull){
+				iData.generateConvexHullPoly();
+			} else if (autoColl){
 				// Autogenerate and add a collision box
 				int collX = Integer.valueOf(Preferences.PREFS.get("coll_x"));
 				int collY = Integer.valueOf(Preferences.PREFS.get("coll_y"));

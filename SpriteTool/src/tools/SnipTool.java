@@ -128,7 +128,6 @@ public class SnipTool extends Tool
 			case SECOND:
 				if (rect.contains(x, y)){
 					MainWindow.MAIN_WINDOW.getImagePanel().addSnippedImage(rect);
-				} else {
 				}
 				rect = null;
 				state = SnipState.START;
@@ -158,8 +157,8 @@ public class SnipTool extends Tool
 		}
 	}
 	
-	private boolean isEmptyImageRegion(BufferedImage img, Rectangle rect){
-		int value = img.getRGB(rect.x, rect.y);
+	private static boolean isEmptyImageRegion(BufferedImage img, Rectangle rect){
+		int value = 0;
 		for (int i = rect.x; i < rect.x + rect.width; i++){
 			for (int j = rect.y; j < rect.y + rect.height; j++){
 				if (img.getRGB(i, j) != value){

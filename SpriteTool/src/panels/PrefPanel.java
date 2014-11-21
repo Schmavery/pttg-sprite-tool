@@ -158,6 +158,7 @@ public class PrefPanel extends JPanel
 		JPanel inner = new JPanel();
 		inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
 		
+		addPrefBool("Auto Collision Box", "hull_auto", inner);
 		final JCheckBox collChk = addPrefBool("Auto Collision Box", "coll_auto", inner);
 		final JPanel collContainer = new JPanel();
 		collContainer.setLayout(new BoxLayout(collContainer, BoxLayout.Y_AXIS));

@@ -53,11 +53,12 @@ public class Preferences implements Cloneable
 		set("sheet_mag", "3");
 		set("image_mag", "30");
 		set("autosnip_size", "16");
-		set("coll_auto", "true");
+		set("coll_auto", "false");
 		set("coll_x", "4");
 		set("coll_y", "6");
 		set("coll_w", "8");
 		set("coll_h", "8");
+		set("hull_auto", "true");
 		set("show_tips", "true");
 		set("pause", "100");
 		set("anchor_auto", "true");
