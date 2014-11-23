@@ -11,7 +11,9 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -23,12 +25,12 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
-import panels.AnimPreviewPanel;
 import main.Animation;
 import main.Canvas;
 import main.ImageData;
 import main.ImageData.ImageType;
 import main.MainWindow;
+import panels.AnimPreviewPanel;
 
 /**
  * Option panel displays a list of animations with names.
@@ -37,7 +39,7 @@ import main.MainWindow;
  */
 public class AnimTool extends Tool
 {
-	enum AnimActionType {SELECT, RENAME, NEW, DELETE};
+	enum AnimActionType {RENAME, NEW, DELETE};
 	private static JPanel colorPanel = new JPanel();
 	public static final Color DEFAULT_COLOR = colorPanel.getBackground(); 
 	Animation selectedAnim;
@@ -72,9 +74,7 @@ public class AnimTool extends Tool
 				AnimTool.this.animListPanel.remove((Component) ((JButton) event.getSource()).getParent());
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().remove(anim);
 				MainWindow.MAIN_WINDOW.setIsDirty(true);
-				break;
-			case SELECT:
-				selectAnimation(((Component)event.getSource()).getParent(), anim);
+				preview.updateAnimation(selectedAnim);
 				break;
 			case NEW:
 				Animation anim = new Animation();
@@ -89,7 +89,6 @@ public class AnimTool extends Tool
 				MainWindow.MAIN_WINDOW.setIsDirty(true);
 				break;
 			}
-			preview.updateAnimation(selectedAnim);
 			animListPanel.getParent().getParent().validate();
 			MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
 		}
@@ -114,9 +113,10 @@ public class AnimTool extends Tool
 		oPanel.setLayout(new BorderLayout());
 		
 		JScrollPane animListScrollPane = new JScrollPane();
-		animListScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		animListScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		animListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		animListScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0,0));
+		animListScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(5,10000000));
+//		animListScrollPane.getVerticalScrollBar().getUI().
 		JPanel animListWrapper = new JPanel(new BorderLayout());
 		animListPanel = new JPanel();
 		animListPanel.setBackground(Color.RED);
@@ -176,8 +176,8 @@ public class AnimTool extends Tool
 		preview.lazyKillRedrawThread();
 	}
 	
-	private JPanel addAnimToPanel(Animation anim){
-		JPanel animPanel = new JPanel();
+	private JPanel addAnimToPanel(final Animation anim){
+		final JPanel animPanel = new JPanel();
 		animPanel.setName(anim.getName());
 		animPanel.setBackground(Color.BLUE);
 		animPanel.setBackground(DEFAULT_COLOR);
@@ -185,15 +185,21 @@ public class AnimTool extends Tool
 		tf.setAction(new AnimAction("", AnimActionType.RENAME, anim));
 		tf.setPreferredSize(new Dimension(80, 25));
 		
-		JButton editBtn = new JButton(new AnimAction("Edit", AnimActionType.SELECT, anim));
-		editBtn.setMargin(new Insets(0,0,0,0));
-
+		MouseListener selector = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event){
+				selectAnimation(animPanel, anim);
+			}
+		};
+		
+		animPanel.addMouseListener(selector);
+		tf.addMouseListener(selector);
+		
 		JButton delBtn = new JButton(new AnimAction("X", AnimActionType.DELETE, anim));
 		delBtn.setBackground(Color.RED);
 		delBtn.setMargin(new Insets(0,0,0,0));
 		
 		animPanel.add(tf);
-		animPanel.add(editBtn);
 		animPanel.add(delBtn);
 		animListPanel.add(animPanel);
 		resetOptionsInnerPanel();
@@ -252,6 +258,8 @@ public class AnimTool extends Tool
 		selectedAnimPanel = parent;
 		selectedAnimPanel.setBackground(Color.DARK_GRAY);
 		selectedAnim = anim;
+		preview.updateAnimation(selectedAnim);
+		MainWindow.MAIN_WINDOW.getImagePanel().getCanvas().refresh();
 	}
 	
 	private void doFrameAction(String action){

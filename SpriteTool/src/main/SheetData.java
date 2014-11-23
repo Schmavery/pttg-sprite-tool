@@ -11,8 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import tools.Tools;
 import main.ImageData.ImageType;
+import tools.Tools;
 
 public class SheetData
 {
@@ -84,22 +84,37 @@ public class SheetData
 	
 	public void removeImageData(Rectangle rect, boolean autoRemove){
 		ImageData match = null;
-		for (ImageData iData : imgs){
+		System.out.println("removing");
+//		for (ImageData iData : imgs){
+		for(Iterator<ImageData> it = imgs.iterator(); it.hasNext();){
+			ImageData iData = it.next();
 			if (rect.equals(iData.getRect())){
 				match = iData;
 				JPanel p = (JPanel) iData.getButton().getParent();
 				p.remove(iData.getButton());
 				p.invalidate();
 				p.repaint();
+				if (match != null && autoRemove){
+					imgs.remove(match);
+				}
 				MainWindow.MAIN_WINDOW.getCanvas().repaint();
 				break;
 			}
 		}
-		if (match != null && autoRemove){
-			imgs.remove(match);
-		} else if (match == null){
+		
+		if (match == null){
 			System.out.println("Could not find image");
+			return;
 		}
+		
+		for (Iterator<Animation> it = anims.iterator(); it.hasNext();){
+			Animation a = it.next();
+			a.getFrames().remove(match);
+			if (a.getFrames().isEmpty()){
+				it.remove();
+			}
+		}
+		
 	}
 	
 	public void setCurrentImage(JButton button){

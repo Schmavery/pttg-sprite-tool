@@ -303,8 +303,8 @@ public class MainWindow extends JFrame
 	}	
 	
 	public void setIsDirty(boolean b){
-		this.isDirty = b;
-		if (b){
+		this.isDirty = b && savePath != null && savePath.length() > 0;
+		if (this.isDirty){
 			setTitle(TITLE_PREFIX + ": *"+ savePath);
 		} else {
 			setTitle(TITLE_PREFIX + ": "+ savePath);
