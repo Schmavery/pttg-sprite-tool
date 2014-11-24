@@ -1,5 +1,6 @@
 package tools;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -12,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import main.Canvas;
 import main.Hook;
@@ -29,7 +31,9 @@ public class HookTool extends Tool
 		super("Hook Tool", "res/pencil.png", ImageType.IMAGE);
 		
 		JPanel oPanel = getOptionsInnerPanel();
-		oPanel.setLayout(new BoxLayout(oPanel, BoxLayout.Y_AXIS));
+		oPanel.setLayout(new BorderLayout());
+		JPanel inner = new JPanel();
+		inner.setLayout(new BoxLayout(inner, BoxLayout.Y_AXIS));
 
 		ActionListener acceptListener = new ActionListener(){
 			@Override
@@ -40,11 +44,13 @@ public class HookTool extends Tool
 		
 		text = new JTextField();
 		text.addActionListener(acceptListener);
-		accept = new JButton("Update Hook Name");
+		accept = new JButton("Update Name");
 		accept.addActionListener(acceptListener);
+		accept.setHorizontalAlignment(SwingConstants.CENTER);
 
-		oPanel.add(text);
-		oPanel.add(accept);
+		inner.add(text);
+		inner.add(accept);
+		oPanel.add(inner, BorderLayout.NORTH);
 	}
 	
 	private void updateName(){
