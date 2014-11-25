@@ -304,6 +304,8 @@ public class ImageData
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
 					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					collisionPoly.addPoint(pt.x, pt.y);
+				} else if (l.startsWith("endcollision")){
+					state = ParserState.DEFAULT;
 				}
 				break;
 			case DEFAULT:
