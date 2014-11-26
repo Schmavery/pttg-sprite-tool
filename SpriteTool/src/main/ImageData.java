@@ -315,16 +315,15 @@ public class ImageData
 					state = ParserState.HOOKS;
 					hooks = new LinkedList<>();
 				} else if (l.startsWith("img")){
+					String idStr = l.substring(4);
+					if (idStr.matches("\\d+")){
+						this.id = Integer.valueOf(idStr);
+					}
 					state = ParserState.BOUNDS;
 					rect = new Rectangle();
 				} else if (l.startsWith("collision")){
 					state = ParserState.COLLISION;
 					collisionPoly = new Polygon();
-				} else if (l.startsWith("img ")){
-					String idStr = l.substring(4);
-					if (idStr.matches("\\d+")){
-						this.id = Integer.valueOf(idStr);
-					}
 				}
 				break;
 			}

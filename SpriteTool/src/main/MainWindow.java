@@ -48,7 +48,7 @@ public class MainWindow extends JFrame
 	public static final int WINDOW_WIDTH = 1000;
 	public static final int TIP_DELAY = 500;
 	public static final String DATA_SUFFIX = ".dat";
-	public static final String TITLE_PREFIX = "PTTG Sprite Tool";
+	public static final String TITLE = "PTTG Sprite Tool";
 	public static MainWindow MAIN_WINDOW;
 	
 	
@@ -84,7 +84,7 @@ public class MainWindow extends JFrame
 			MainWindow.MAIN_WINDOW = this;
 		}
 		
-		setTitle(TITLE_PREFIX);
+		setTitle(TITLE);
 		
 		try{
 			Image img = ImageIO.read(new File("res/board.png"));
@@ -305,9 +305,9 @@ public class MainWindow extends JFrame
 	public void setIsDirty(boolean b){
 		this.isDirty = b && savePath != null && savePath.length() > 0;
 		if (this.isDirty){
-			setTitle(TITLE_PREFIX + ": *"+ savePath);
+			setTitle(TITLE + ": *"+ savePath);
 		} else {
-			setTitle(TITLE_PREFIX + ": "+ savePath);
+			setTitle(TITLE + ": "+ savePath);
 		}
 	}
 	
