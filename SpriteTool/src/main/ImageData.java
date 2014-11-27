@@ -32,20 +32,22 @@ public class ImageData
 		this(null, null);
 	}
 
-	public ImageData(BufferedImage img){
-		this(img, null);
+	public ImageData(BufferedImage img, ImageType t){
+		this(null, img, t);
+		
 	}
 	
-	public ImageData(BufferedImage img, SheetData owner){
-		this(null, img, owner);
-	}
-	
-	public ImageData(Rectangle rect, BufferedImage img, SheetData owner){
+	public ImageData(Rectangle rect, BufferedImage img, ImageType t){
 		this.img = img;
 		this.rect = rect;
 		this.hooks = new LinkedList<>();
-		this.type = ImageType.IMAGE;
-		id = CURR_ID++;
+		type = t;
+		if (t.equals(ImageType.IMAGE)){
+			id = CURR_ID++;
+		} else {
+			id = -1;
+		}
+		System.out.println("Assigned ID:"+id);
 		resetScale();
 	}
 	

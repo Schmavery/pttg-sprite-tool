@@ -39,7 +39,7 @@ import panels.AnimPreviewPanel;
  */
 public class AnimTool extends Tool
 {
-	enum AnimActionType {RENAME, NEW, DELETE};
+	enum AnimActionType {RENAME, PAUSE, NEW, DELETE};
 	private static JPanel colorPanel = new JPanel();
 	public static final Color DEFAULT_COLOR = colorPanel.getBackground(); 
 	Animation selectedAnim;
@@ -74,6 +74,7 @@ public class AnimTool extends Tool
 				AnimTool.this.animListPanel.remove((Component) ((JButton) event.getSource()).getParent());
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().remove(anim);
 				MainWindow.MAIN_WINDOW.setIsDirty(true);
+				Animation.resetId(MainWindow.MAIN_WINDOW.getSheetData().getAnimations());
 				preview.updateAnimation(selectedAnim);
 				break;
 			case NEW:
@@ -85,6 +86,11 @@ public class AnimTool extends Tool
 				break;
 			case RENAME:
 				this.anim.setName(((JTextField) event.getSource()).getText());
+				selectAnimation(((Component)event.getSource()).getParent(), this.anim);
+				MainWindow.MAIN_WINDOW.setIsDirty(true);
+				break;
+			case PAUSE:
+				this.anim.setPause(Integer.parseInt(((JTextField) event.getSource()).getText()));
 				selectAnimation(((Component)event.getSource()).getParent(), this.anim);
 				MainWindow.MAIN_WINDOW.setIsDirty(true);
 				break;
@@ -185,6 +191,10 @@ public class AnimTool extends Tool
 		tf.setAction(new AnimAction("", AnimActionType.RENAME, anim));
 		tf.setPreferredSize(new Dimension(80, 25));
 		
+		JTextField pauseField = new JTextField(String.valueOf(anim.getPause()));
+		pauseField.setAction(new AnimAction("", AnimActionType.PAUSE, anim));
+		pauseField.setPreferredSize(new Dimension(30, 25));
+		
 		MouseListener selector = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event){
@@ -200,6 +210,7 @@ public class AnimTool extends Tool
 		delBtn.setMargin(new Insets(0,0,0,0));
 		
 		animPanel.add(tf);
+		animPanel.add(pauseField);
 		animPanel.add(delBtn);
 		animListPanel.add(animPanel);
 		resetOptionsInnerPanel();

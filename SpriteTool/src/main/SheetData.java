@@ -49,7 +49,7 @@ public class SheetData
 				e.printStackTrace();
 			}
 		}
-		currImgData = new ImageData(spriteSheet, this);
+		currImgData = new ImageData(spriteSheet, ImageType.SHEET);
 		currImgData.setImageType(ImageType.SHEET);
 		currImgData.setButton(button);
 		imgs.add(currImgData);
@@ -76,7 +76,7 @@ public class SheetData
 	}
 	
 	public ImageData newImageData(Rectangle rect, BufferedImage img, JButton button){
-		ImageData iData = new ImageData(rect, img, this);
+		ImageData iData = new ImageData(rect, img, ImageType.IMAGE);
 		iData.setButton(button);
 		imgs.add(iData);
 		return iData;
