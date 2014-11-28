@@ -25,6 +25,7 @@ public class ImageData
 	private float scale;
 	private Point anchorPt;
 	private int id;
+	private String name;
 	
 	private JButton button;
 
@@ -130,6 +131,14 @@ public class ImageData
 	
 	public int getHeight(){
 		return img.getHeight();
+	}
+	
+	public String getName(){
+		if (name != null && name.length() > 0){
+			return name;
+		} else {
+			return String.valueOf(id);
+		}
 	}
 	
 	public int getId(){

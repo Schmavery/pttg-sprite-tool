@@ -19,10 +19,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import main.Animation;
@@ -144,9 +147,17 @@ public class AnimTool extends Tool
 		JPanel upperPanel = new JPanel();
 		upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.Y_AXIS));
 		
+		JPanel title = new JPanel();
+		JLabel nameLbl = new JLabel("Name");
+		nameLbl.setPreferredSize(new Dimension(70, 25));
+		JLabel pauseLbl = new JLabel("Pause");
+		title.add(nameLbl);
+		title.add(pauseLbl);
+		
 		upperPanel.add(newAnimBtn);
 		upperPanel.add(editPanel);
 		upperPanel.add(Box.createVerticalStrut(10));
+		upperPanel.add(title);
 		preview = new AnimPreviewPanel();
 		
 		
