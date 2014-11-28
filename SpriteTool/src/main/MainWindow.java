@@ -335,12 +335,12 @@ public class MainWindow extends JFrame
 			for (ImageData iData : getSheetData().getAllImageData()){
 				if (iData.getType().equals(ImageType.IMAGE)){
 					out.write(iData.toString() + "\n");
-					System.out.print(iData.toString() + "\n");
+//					System.out.print(iData.toString() + "\n");
 				}
 			}
 			for (Animation anim : getSheetData().getAnimations()){
 				out.write(anim.toString() + "\n");
-				System.out.print(anim.toString() + "\n");
+//				System.out.print(anim.toString() + "\n");
 			}
 		}
 		catch (FileNotFoundException e)

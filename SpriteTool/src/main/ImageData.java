@@ -148,6 +148,10 @@ public class ImageData
 		return id;
 	}
 	
+	public void setId(int id){
+		this.id = id;
+	}
+	
 	public void setButton(JButton button){
 		this.button = button;
 	}
@@ -162,6 +166,10 @@ public class ImageData
 	
 	public Rectangle getRect(){
 		return rect;
+	}
+	
+	public void clearRect(){
+		rect = new Rectangle();
 	}
 	
 	public void setPoly(Polygon p){
