@@ -84,8 +84,6 @@ public class SheetData
 	
 	public void removeImageData(Rectangle rect, boolean autoRemove){
 		ImageData match = null;
-		System.out.println("removing");
-//		for (ImageData iData : imgs){
 		for(Iterator<ImageData> it = imgs.iterator(); it.hasNext();){
 			ImageData iData = it.next();
 			if (rect.equals(iData.getRect())){

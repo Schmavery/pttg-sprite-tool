@@ -118,6 +118,7 @@ public class ImagePanel extends JPanel
 	}
 	
 	public ImageData addSnippedImage(Rectangle rect){
+		ImageData.resetId(getSheetData().getAllImageData());
 		boolean autoColl = Boolean.parseBoolean(Preferences.PREFS.get("coll_auto"));
 		boolean autoHull = Boolean.parseBoolean(Preferences.PREFS.get("hull_auto"));
 		boolean autoAnchor = Boolean.parseBoolean(Preferences.PREFS.get("anchor_auto"));

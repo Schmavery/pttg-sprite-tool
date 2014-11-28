@@ -48,7 +48,6 @@ public class ImageData
 		} else {
 			id = -1;
 		}
-		System.out.println("Assigned ID:"+id);
 		resetScale();
 	}
 	
@@ -131,6 +130,10 @@ public class ImageData
 	
 	public int getHeight(){
 		return img.getHeight();
+	}
+	
+	public void setName(String name){
+		this.name = name;
 	}
 	
 	public String getName(){
@@ -241,6 +244,7 @@ public class ImageData
 		str += "img " + id + "\n";
 		str += "pt (" + rect.x + "," + rect.y + ")\n";
 		str += "dim (" + rect.width + "," + rect.height + ")\n";
+		str += "name [["+ getName() +"]]\n";
 		
 		if (anchorPt != null){
 			str += "anchor\n";
@@ -267,7 +271,7 @@ public class ImageData
 		return str;
 	}
 	
-	private enum ParserState {DEFAULT, ANCHOR, HOOKS, BOUNDS, COLLISION};
+	private enum ParserState {DEFAULT, ANCHOR, HOOKS, INITIAL, COLLISION};
 	
 	/**
 	 * Loads save data into this ImageData object.  This functions endeavours to
@@ -300,7 +304,7 @@ public class ImageData
 					state = ParserState.DEFAULT;
 				}
 				break;
-			case BOUNDS:
+			case INITIAL:
 				if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
 					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					rect.setLocation(pt);
@@ -308,6 +312,9 @@ public class ImageData
 					// Parse width and height as a point for code reuse ;)
 					pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 					rect.setSize(pt.x, pt.y);
+				} else if (l.matches("name \\[\\[.+\\]\\]")){
+					String name = l.substring(l.indexOf("[[")+2, l.indexOf("]]"));
+					setName(name);
 					state = ParserState.DEFAULT;
 				}
 				break;
@@ -330,7 +337,7 @@ public class ImageData
 					if (idStr.matches("\\d+")){
 						this.id = Integer.valueOf(idStr);
 					}
-					state = ParserState.BOUNDS;
+					state = ParserState.INITIAL;
 					rect = new Rectangle();
 				} else if (l.startsWith("collision")){
 					state = ParserState.COLLISION;
