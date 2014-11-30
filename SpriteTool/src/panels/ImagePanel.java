@@ -127,7 +127,7 @@ public class ImagePanel extends JPanel
 			// Check if this rect overlaps another.
 			for (ImageData iData : sheetData.getAllImageData()){
 				if (iData.getType().equals(ImageType.IMAGE) && iData.getRect().intersects(rect)){
-//					System.out.println("This intersects another rectangle");
+					System.out.println("Image intersects another");
 					return null;
 				}
 			}

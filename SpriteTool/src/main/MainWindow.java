@@ -37,6 +37,8 @@ import main.ImageData.ImageType;
 import panels.ImagePanel;
 import panels.OptionsPanel;
 import panels.StatusPanel;
+import parsers.DefaultParser;
+import parsers.Parser;
 import tools.Tool;
 import tools.Tools;
 
@@ -173,7 +175,7 @@ public class MainWindow extends JFrame
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void actionPerformed(ActionEvent e){
-				MainWindow.this.save(true);
+				MainWindow.this.save(true, new DefaultParser());
 			}
 		});
 		saveMI.setMnemonic(KeyEvent.VK_S);
@@ -184,10 +186,20 @@ public class MainWindow extends JFrame
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void actionPerformed(ActionEvent e){
-				MainWindow.this.save(false);
+				MainWindow.this.save(false, new DefaultParser());
 			}
 		});
 		menu.add(saveAsMI);
+		
+		JMenuItem exportAsMI = new JMenuItem();
+		exportAsMI.setAction(new AbstractAction("Export As") {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void actionPerformed(ActionEvent e){
+//				MainWindow.this.export(false);
+			}
+		});
+		menu.add(exportAsMI);
 		
 		JMenuItem prefMI = new JMenuItem();
 		prefMI.setAction(new PrefAction());
@@ -311,37 +323,30 @@ public class MainWindow extends JFrame
 		}
 	}
 	
-	public void save(boolean useDefault){
+	public void save(boolean useDefault, Parser parser){
 		System.out.println("Attempting save");
 		// if save is successful
 		if (useDefault && dataPath != null && !dataPath.isEmpty()){
-			save(dataPath);
+			save(dataPath, parser);
 		} else {
 			// Display save dialog.
 			JFileChooser fc = new JFileChooser();
 			fc.setFileFilter(new FileNameExtensionFilter("Data file (*.dat)", "dat"));
+			fc.setFileFilter(new FileNameExtensionFilter("Data file (*.dat2)", "dat2"));
 			fc.showSaveDialog(MainWindow.MAIN_WINDOW);
+			System.out.println(fc.getFileFilter().getDescription());
 			File file = fc.getSelectedFile();
 			if (file != null){
-				save(file.getAbsolutePath());
+				save(file.getAbsolutePath(), parser);
 			}
 		}
 	}
 	
-	private void save(String path){
+	private void save(String path, Parser parser){
 		dataPath = path + (path.endsWith(DATA_SUFFIX) ? "" : DATA_SUFFIX);
+		
 		try (PrintWriter out = new PrintWriter(dataPath)){
-			out.write("##" + savePath + "\n");
-			for (ImageData iData : getSheetData().getAllImageData()){
-				if (iData.getType().equals(ImageType.IMAGE)){
-					out.write(iData.toString() + "\n");
-//					System.out.print(iData.toString() + "\n");
-				}
-			}
-			for (Animation anim : getSheetData().getAnimations()){
-				out.write(anim.toString() + "\n");
-//				System.out.print(anim.toString() + "\n");
-			}
+			out.write(parser.save(savePath));
 		}
 		catch (FileNotFoundException e)
 		{
@@ -359,43 +364,22 @@ public class MainWindow extends JFrame
 	 * @return Path of the image for this data.
 	 */
 	public void load(String path){
+		Parser parser = new DefaultParser();
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path))))
 		{
-			StringBuilder sb = new StringBuilder();
 			String str = br.readLine();
-			
-			while (str != null){
-				if (str.startsWith("img")){
-					sb.setLength(0);
-					sb.append(str+"\n");
-				} else if (str.startsWith("anim"))
-				{
-					sb.setLength(0);
-					sb.append(str+"\n");
-				} else if (str.startsWith("endimg")){
-					String data = sb.toString();
-					getImagePanel().addSnippedImage(ImageData.parseLoadRect(data)).loadData(data);
-				} else if (str.startsWith("endanim")){
-					String data = sb.toString();
-					Animation tmpAnim = new Animation();
-					getSheetData().getAnimations().add(tmpAnim);
-					tmpAnim.loadData(data);
-				} else {
-					sb.append(str+"\n");
-				}
+			StringBuilder sb = new StringBuilder();
+			while(str != null){
 				str = br.readLine();
+				sb.append(str);
+				sb.append("\n");
 			}
+			parser.load(sb.toString());
 			ImageData.resetId(getSheetData().getAllImageData());
 			Animation.resetId(getSheetData().getAnimations());
 			currentTool.selected();
-		}
-		catch (FileNotFoundException e)
-		{
-			System.out.println("No data file exists for this image.");
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("Load failed: "+path);
 		}
 	}
 
@@ -407,7 +391,7 @@ public class MainWindow extends JFrame
 					"Save before exiting?", "Save?", JOptionPane.YES_NO_CANCEL_OPTION);
 			switch (result){
 			case JOptionPane.YES_OPTION:
-				save(true);
+				save(true, new DefaultParser());
 				break;
 			case JOptionPane.NO_OPTION:
 				Preferences.PREFS.savePrefChanges();

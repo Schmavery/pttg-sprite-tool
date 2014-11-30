@@ -7,12 +7,18 @@ import java.awt.Rectangle;
 import main.Animation;
 import main.Hook;
 import main.ImageData;
+import main.ImageData.ImageType;
 import main.MainWindow;
 import panels.ImagePanel;
 
 public class DefaultParser implements Parser {
 
 	private enum ParserState {DEFAULT, ANCHOR, HOOKS, INITIAL, COLLISION};
+	
+	@Override
+	public ParserSupport getSupportType(){
+		return ParserSupport.BOTH;
+	}
 	
 	@Override
 	public String getImagePath(String data){
@@ -29,10 +35,12 @@ public class DefaultParser implements Parser {
 	}
 	
 	@Override
-	public String save() {
+	public String save(String imgPath) {
 		String out = "";
+		out += "##" + imgPath + "\n";
 		for (ImageData img : MainWindow.MAIN_WINDOW.getSheetData().getAllImageData()){
-			out += imgToString(img);
+			if (img.getType().equals(ImageType.IMAGE))
+				out += imgToString(img);
 		}
 		for (Animation anim : MainWindow.MAIN_WINDOW.getSheetData().getAnimations()){
 			out += animToString(anim);
@@ -56,7 +64,12 @@ public class DefaultParser implements Parser {
 			} else if (str.startsWith("endimg")){
 				String data = sb.toString();
 				ImageData imgData = imgPanel.addSnippedImage(parseLoadRect(data));
-				loadImageData(imgData, data);
+				if (imgData != null){
+					loadImageData(imgData, data);
+				} else {
+					System.out.println("Corrupt data file.");
+					break;
+				}
 			} else if (str.startsWith("endanim")){
 				String data = sb.toString();
 				Animation tmpAnim = new Animation();
@@ -72,14 +85,19 @@ public class DefaultParser implements Parser {
 	public static Rectangle parseLoadRect(String data){
 		Rectangle rect = new Rectangle();
 		Point pt;
+		boolean ptSet = false;
+		boolean dimSet = false;
 		for (String l : data.split("\n")){
 			if (l.matches("pt +\\([0-9]+, ?[0-9]+\\)")){
 				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 				rect.setLocation(pt);
+				ptSet = true;
+				if (ptSet && dimSet) break;
 			} else if (l.matches("dim +\\([0-9]+, ?[0-9]+\\)")){
 				pt = parsePoint(l.substring(l.indexOf("("), l.indexOf(")")+1));
 				rect.setSize(pt.x, pt.y);
-				break;
+				dimSet = true;
+				if (ptSet && dimSet) break;
 			}
 		}
 		return rect;
