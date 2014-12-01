@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -38,6 +39,7 @@ import panels.ImagePanel;
 import panels.OptionsPanel;
 import panels.StatusPanel;
 import parsers.DefaultParser;
+import parsers.JSONParser;
 import parsers.Parser;
 import tools.Tool;
 import tools.Tools;
@@ -49,7 +51,7 @@ public class MainWindow extends JFrame
 	public static final int WINDOW_HEIGHT = 700;
 	public static final int WINDOW_WIDTH = 1000;
 	public static final int TIP_DELAY = 500;
-	public static final String DATA_SUFFIX = ".dat";
+	public static final String DEFAULT_SUFFIX = ".dat";
 	public static final String TITLE = "PTTG Sprite Tool";
 	public static MainWindow MAIN_WINDOW;
 	
@@ -63,6 +65,9 @@ public class MainWindow extends JFrame
 	
 	private JFileChooser fileChooser = new JFileChooser();
 	private boolean isDirty = false;
+	private HashMap<FileNameExtensionFilter, Parser> filters;
+	private Parser currParser;
+	
 	private String savePath = "";
 	private String dataPath = "";
 	
@@ -128,6 +133,12 @@ public class MainWindow extends JFrame
 	            MainWindow.this.exit();
 	        }
 	    });
+		
+		filters = new HashMap<>();
+		// Define these in reverse order
+		filters.put(new FileNameExtensionFilter("JSON file (*.json)", "json"), new JSONParser());
+		filters.put(new FileNameExtensionFilter("Data file (*.dat)", "dat"), new DefaultParser());
+		
 		currentTool.selected();
 	}
 	
@@ -175,7 +186,7 @@ public class MainWindow extends JFrame
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void actionPerformed(ActionEvent e){
-				MainWindow.this.save(true, new DefaultParser());
+				MainWindow.this.save(true);
 			}
 		});
 		saveMI.setMnemonic(KeyEvent.VK_S);
@@ -186,7 +197,7 @@ public class MainWindow extends JFrame
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void actionPerformed(ActionEvent e){
-				MainWindow.this.save(false, new DefaultParser());
+				MainWindow.this.save(false);
 			}
 		});
 		menu.add(saveAsMI);
@@ -234,7 +245,6 @@ public class MainWindow extends JFrame
 			createToolbarButton(t, toolbar);
 		}
 
-//		toolbar.add(new JButton("A"));
 //		toolbar.add(new JButton("A"));
 		
 		optionsPanel = new OptionsPanel();
@@ -285,26 +295,34 @@ public class MainWindow extends JFrame
 		currentTool.selected();
 	}
 	
-	public void openImage(String path, boolean loadData){
+	public void openImage(String path, boolean tryLoadData){
 		// This may be a data file rather than an image.
-		if (path.endsWith(DATA_SUFFIX)){
-			dataPath = path;
-			loadData = true;
+		dataPath = "";
+		boolean loadData = tryLoadData;
+		for (Parser p : filters.values()){
+			if (path.endsWith(p.getSuffix())){
+				dataPath = path;
+				loadData = true;
 
-			// Get image path from data file
-			try (BufferedReader br = new BufferedReader(new FileReader(path))){
-				String read = br.readLine();
-				if (read.startsWith("##")){
-					path = read.substring(2);
+				// Get image path from data file
+				try (BufferedReader br = new BufferedReader(new FileReader(path))){
+					StringBuffer sb = new StringBuffer();
+					String read = br.readLine();
+					while ((read = br.readLine()) != null) sb.append(read + "\n");
+					p.getImagePath(sb.toString());
+					currParser = p;
+				}
+				catch (IOException e)
+				{
+					System.out.println("Could not read.");
 				}
 			}
-			catch (IOException e)
-			{
-				System.out.println("Could not read.");
-			}
-		} else if (loadData){
-			dataPath = path + DATA_SUFFIX;
 		}
+		if (loadData && dataPath.length() == 0){
+			dataPath = path + DEFAULT_SUFFIX;
+			currParser = new DefaultParser();
+		}
+		
 		imagePanel.setSheetPath(path);
 		savePath = path;
 		Tools.setButtonEnabledState(ImageType.SHEET);
@@ -323,27 +341,30 @@ public class MainWindow extends JFrame
 		}
 	}
 	
-	public void save(boolean useDefault, Parser parser){
+	public void save(boolean useDefault){
 		System.out.println("Attempting save");
 		// if save is successful
-		if (useDefault && dataPath != null && !dataPath.isEmpty()){
-			save(dataPath, parser);
+		if (useDefault && dataPath != null && !dataPath.isEmpty() && currParser != null){
+			save(dataPath, currParser);
 		} else {
 			// Display save dialog.
 			JFileChooser fc = new JFileChooser();
-			fc.setFileFilter(new FileNameExtensionFilter("Data file (*.dat)", "dat"));
-			fc.setFileFilter(new FileNameExtensionFilter("Data file (*.dat2)", "dat2"));
+			for (FileNameExtensionFilter f : filters.keySet()){
+				fc.setFileFilter(f);
+			}
+
 			fc.showSaveDialog(MainWindow.MAIN_WINDOW);
 			System.out.println(fc.getFileFilter().getDescription());
+			currParser = filters.get(fc.getFileFilter());
 			File file = fc.getSelectedFile();
 			if (file != null){
-				save(file.getAbsolutePath(), parser);
+				save(file.getAbsolutePath(), currParser);
 			}
 		}
 	}
 	
 	private void save(String path, Parser parser){
-		dataPath = path + (path.endsWith(DATA_SUFFIX) ? "" : DATA_SUFFIX);
+		dataPath = path + (path.endsWith(parser.getSuffix()) ? "" : parser.getSuffix());
 		
 		try (PrintWriter out = new PrintWriter(dataPath)){
 			out.write(parser.save(savePath));
@@ -391,7 +412,7 @@ public class MainWindow extends JFrame
 					"Save before exiting?", "Save?", JOptionPane.YES_NO_CANCEL_OPTION);
 			switch (result){
 			case JOptionPane.YES_OPTION:
-				save(true, new DefaultParser());
+				save(true);
 				break;
 			case JOptionPane.NO_OPTION:
 				Preferences.PREFS.savePrefChanges();
