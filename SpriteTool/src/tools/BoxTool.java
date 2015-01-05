@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -42,7 +43,17 @@ public class BoxTool extends Tool
 				setBoxMode(boxMode.isSelected());
 			}
 		});
+		
+		JButton hullBtn = new JButton("Autogen Hull");
+		hullBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainWindow.MAIN_WINDOW.getSheetData().getCurrentImageData().generateConvexHullPoly();
+				MainWindow.MAIN_WINDOW.getCanvas().refresh();
+			}
+		});
 		oPanel.add(boxMode);
+		oPanel.add(hullBtn);
 	}
 	
 	@Override

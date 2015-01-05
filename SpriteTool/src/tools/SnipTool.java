@@ -187,7 +187,7 @@ public class SnipTool extends Tool
 				break;
 			case SECOND:
 				g.drawRect(c.getScaledCoord(rect.x), c.getScaledCoord(rect.y), 
-						c.getScaledCoord(rect.width + 1), c.getScaledCoord(rect.height));
+						c.getScaledCoord(rect.width), c.getScaledCoord(rect.height));
 				break;
 			case START:
 				break;
