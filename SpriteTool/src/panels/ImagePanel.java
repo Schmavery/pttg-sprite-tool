@@ -101,6 +101,8 @@ public class ImagePanel extends JPanel
 		System.out.println("setting in imgPanel: "+path);
 		sheetData.reset();
 		sheetData.setSheetPath(path, sheetButton);
+		if(sheetData.getImage() == null) return;
+
 		sheetButton.setIcon(new ImageIcon(getMaxScaledInstance(sheetData.getImage(), THUMB_WIDTH)));
 		sheetButton.setText("View Canvas");
 		canvas.refresh();

@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -68,7 +70,7 @@ public class MainWindow extends JFrame
 	private HashMap<FileNameExtensionFilter, Parser> filters;
 	private Parser currParser;
 	
-	private String savePath = "";
+	private String imgPath = "";
 	private String dataPath = "";
 	
 	public static void main(String[] args)
@@ -157,7 +159,7 @@ public class MainWindow extends JFrame
 				fileChooser.showOpenDialog(MainWindow.MAIN_WINDOW);
 				File file = fileChooser.getSelectedFile();
 				if (file != null){
-					System.out.println(file.getAbsolutePath());
+					System.out.println("-->"+file.getAbsolutePath());
 					MainWindow.MAIN_WINDOW.openImage(file.getAbsolutePath(), false);
 				}
 			}
@@ -173,7 +175,7 @@ public class MainWindow extends JFrame
 				fileChooser.showOpenDialog(MainWindow.MAIN_WINDOW);
 				File file = fileChooser.getSelectedFile();
 				if (file != null){
-					System.out.println(file.getAbsolutePath());
+					System.out.println(">>>"+file.getAbsolutePath());
 					MainWindow.MAIN_WINDOW.openImage(file.getAbsolutePath(), true);
 				}
 			}
@@ -303,28 +305,39 @@ public class MainWindow extends JFrame
 			if (path.endsWith(p.getSuffix())){
 				dataPath = path;
 				loadData = true;
-
+				
+				
 				// Get image path from data file
 				try (BufferedReader br = new BufferedReader(new FileReader(path))){
 					StringBuffer sb = new StringBuffer();
-					String read = br.readLine();
+					String read;
+					sb.append((read = br.readLine()) + "\n");
 					while ((read = br.readLine()) != null) sb.append(read + "\n");
-					p.getImagePath(sb.toString());
+					
+					imgPath = p.getImagePath(sb.toString());
+					System.out.println("Read imgPath"+imgPath);
+					File f = new File(imgPath);
+					if (!f.isAbsolute()){
+						imgPath = (new File(dataPath)).getParent()+File.separator+imgPath;						
+					}
 					currParser = p;
 				}
 				catch (IOException e)
 				{
 					System.out.println("Could not read.");
 				}
+				break;
 			}
 		}
 		if (loadData && dataPath.length() == 0){
 			dataPath = path + DEFAULT_SUFFIX;
 			currParser = new DefaultParser();
+			//imagePanel.setSheetPath(path);
+			imgPath = path;
 		}
 		
-		imagePanel.setSheetPath(path);
-		savePath = path;
+		
+		imagePanel.setSheetPath(imgPath);
 		Tools.setButtonEnabledState(ImageType.SHEET);
 		if (loadData){
 			load(dataPath);
@@ -333,11 +346,11 @@ public class MainWindow extends JFrame
 	}	
 	
 	public void setIsDirty(boolean b){
-		this.isDirty = b && savePath != null && savePath.length() > 0;
+		this.isDirty = b && imgPath != null && imgPath.length() > 0;
 		if (this.isDirty){
-			setTitle(TITLE + ": *"+ savePath);
+			setTitle(TITLE + ": *"+ imgPath);
 		} else {
-			setTitle(TITLE + ": "+ savePath);
+			setTitle(TITLE + ": "+ imgPath);
 		}
 	}
 	
@@ -367,7 +380,9 @@ public class MainWindow extends JFrame
 		dataPath = path + (path.endsWith(parser.getSuffix()) ? "" : parser.getSuffix());
 		
 		try (PrintWriter out = new PrintWriter(dataPath)){
-			out.write(parser.save(savePath));
+			Path pData = Paths.get(dataPath);
+			Path pImg = Paths.get(imgPath);
+			out.write(parser.save((pData.getParent()).relativize(pImg).toString()));
 		}
 		catch (FileNotFoundException e)
 		{

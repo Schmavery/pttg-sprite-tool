@@ -53,15 +53,14 @@ public class DefaultParser implements Parser {
 		StringBuilder sb = new StringBuilder();
 		ImagePanel imgPanel = MainWindow.MAIN_WINDOW.getImagePanel();
 		
-		for(String str : input.split("\n")){
+		for(String str : input.split("\n")) {
 			if (str.startsWith("img")){
 				sb.setLength(0);
 				sb.append(str+"\n");
-			} else if (str.startsWith("anim"))
-			{
+			} else if (str.startsWith("anim")) {
 				sb.setLength(0);
 				sb.append(str+"\n");
-			} else if (str.startsWith("endimg")){
+			} else if (str.startsWith("endimg")) {
 				String data = sb.toString();
 				ImageData imgData = imgPanel.addSnippedImage(parseLoadRect(data));
 				if (imgData != null){
@@ -70,7 +69,7 @@ public class DefaultParser implements Parser {
 					System.out.println("Corrupt data file.");
 					break;
 				}
-			} else if (str.startsWith("endanim")){
+			} else if (str.startsWith("endanim")) {
 				String data = sb.toString();
 				Animation tmpAnim = new Animation();
 				MainWindow.MAIN_WINDOW.getSheetData().getAnimations().add(tmpAnim);

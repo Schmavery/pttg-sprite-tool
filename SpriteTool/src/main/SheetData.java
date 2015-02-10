@@ -39,6 +39,7 @@ public class SheetData
 		if (path != null){
 			try
 			{
+				System.out.println(">>>" + path);
 				BufferedImage s = ImageIO.read(new URL("file:///" + path));
 				System.out.println(s.getType() + BufferedImage.TYPE_INT_ARGB);
 				spriteSheet = new BufferedImage(s.getWidth(), s.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -46,7 +47,8 @@ public class SheetData
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
+				return;
 			}
 		}
 		currImgData = new ImageData(spriteSheet, ImageType.SHEET);
